@@ -108,3 +108,60 @@ public:
 	nessun costruttore per il momento*/
 };
 ````
+
+**Problema:** nodo ed i suoi membri non sono accessibili dall'esterno
+
+````C++
+class contenitore{
+// friend class iteratore; //non necessaria da C++03
+private:
+	class nodo{
+	...
+	};
+	nodo* first;
+public:
+	class iteratore{ //classe annidata nella parte pubblica
+	private:
+		contenitore::nodo* punt;
+		...
+	};
+	contenitore();
+	void aggiungi_nodo(int);
+}
+````
+
+````C++
+class contenitore{
+private:
+	class nodo{...};
+	nodo* first;
+public:
+	class iteratore{ //necessaria
+		friend class contenitore; //dichiarazione di amicizia
+		...
+	}; //ATTENZIONE, va definita prima dei metodi che la usano
+	...
+	iteratore begin() const; //costruttore di iteratore
+	iteratore end() const; //costruttore di iteratore
+	//operatore di subscripting
+	int& operator[] (const iteratore&) const;
+};
+````
+
+````C++
+contenitore::iteratore contenitore::begin() const{
+	iteratore aux; //costruttore di default standard
+	aux.punt = first; //per amicizia ho accesso a punt
+	return aux;
+}
+
+contenitore::iteratore contenitore::end() const{
+	iteratore aux;
+	aux.punt = 0; //per amicizia
+	return aux;
+}
+
+int& contenitore::operator[](const contenitore::iteratore& it) const{
+	return it.
+}
+````
