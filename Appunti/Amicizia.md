@@ -72,5 +72,39 @@ class E{
 
 **_Iteratori_**: Funzionalità per scorrere ed accedere agli elementi di una collezione
 
-##### Iteratori lez 15 slide 21
+````C++
+class contenitore{
+private:
+	class nodo{
+	public: //per convenienza nell'esempio
+		int info;
+		nodo* next;
+		nodo(int x, nodo* p): info(x), next(p) {}
+	};
+	nodo* first; //puntatore al primo nodo della lista
+public:
+	contenitore() : first(0) {}
+	void aggiungi_in_testa(int x) {first = new nodo(x,first);}
+}
+````
 
+Classe `iteratore` i cui oggetti rappresentano degli indici ai nodi degli oggetti della classe `contenitore`
+````C++
+class iteratore{
+private:
+	contenitore::nodo* punt; //nodo puntato dall'iteratore
+public:
+	bool operator==(const iteratore& i) const{
+		return punt == i.punt;
+	}
+	bool operator!=(const iteratore& i) const{
+		return punt != i.punt;
+	}
+	iteratore& operator++(){ //operator++ prefisso
+		if (punt) punt = punt->next; 
+		return *this;
+	}
+	/*se it punta all'ultimo nodo, da ++it non si torna indietro
+	nessun costruttore per il momento*/
+};
+````
