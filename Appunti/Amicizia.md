@@ -162,6 +162,51 @@ contenitore::iteratore contenitore::end() const{
 }
 
 int& contenitore::operator[](const contenitore::iteratore& it) const{
-	return it.
+	return it.punt->info; //per amicizia, nessun controllo su it.punt
 }
 ````
+
+Possiamo ora utilizzare gli iteratori della classe contenitore come nel seguente esempio di funzione esterna:
+
+````C++
+int somma_elementi(const contenitore& c){
+	int s=0;
+	for(contenitore::iteratore it=c.begin(); it!=c.end(); ++it)
+		s += c[it];
+	return s;
+}
+````
+
+Dichiarazione della classe `iteratore`:
+
+````C++
+class iteratore{
+	friend class bolletta;
+public:
+	bool operator==(const iteratore&) const;
+	bool operator!=(const iteratore&) const;
+	iteratore& operator++(); //++prefisso
+	iteratore operator++(int); //++postfisso
+private:
+	bolletta::nodo* punt;
+};
+//notare che non ci sono costruttori espliciti
+````
+
+Metodi `begin()` ed `end()` e l'overloading dell'operatore di indicizzazione `[]`
+
+````C++
+class bolletta{
+public:
+	...
+	iteratore begin() const;
+	iteratore end() const;
+	telefonata& operator[] (const iteratore&) const,
+	//tipo di ritorno per riferimento
+	...
+private:
+	...
+};
+````
+
+[[Overloading#Overloading operator->]]

@@ -185,3 +185,19 @@ operator++() //++ prefisso
 
 /*Dato che non esiste un modo per distinguerli si usa una variabile fittizzia, quindi si mette solo int per il postfisso e non si mette per il prefisso*/
 ````
+
+## Overloading operator->
+
+L'operatore `->` di selezione di membro tramite puntatore può essere ridefinito internamente come *operatore unario postfisso*.
+Tipicamente ritorna un puntatore ad una classe (oppure un oggetto di una classe per cui è stato ridefinito `->`).
+
+Definire l'overloading di `->` come metodo di iteratore in modo tale che `Somma_Durate()` possa essere scritta nel seguente modo:
+
+````C++
+orario Somma_Durate(const bolletta& b){ //per riferimento
+	orario durata;
+	for(bolletta::iteratore it = b.begin(); it != b.end(); ++it)
+		durata = durata + (it->Fine() - it->Inizio());
+	return durata;
+}
+````
