@@ -201,3 +201,4 @@ orario Somma_Durate(const bolletta& b){ //per riferimento
 	return durata;
 }
 ````
+
