@@ -7,6 +7,8 @@ Deve inoltre includere il costruttore di copia profonda, l'assegnazione profonda
 
 class Vettore{
     friend Vettore operator+(const Vettore&, const Vettore&); //Le dichiarazioni di amicizia si mettono appena sotto la classe
+    friend bool operator==(const Vettore& v1, const Vettore& v2);
+
 private:
     int* a;
     unsigned int size;
@@ -37,6 +39,13 @@ public:
     ~Vettore(){ //Regola del 3 rimane solamente il distruttore
         delete[] a;
     }
+
+    void append(const Vettore& v){
+        *this = *this + v;
+    }
+
+    operator[] //15.55 lezione del 30 /10
+    
 };
 
 Vettore operator+(const Vettore& v1, const Vettore& v2){
@@ -46,6 +55,15 @@ Vettore operator+(const Vettore& v1, const Vettore& v2){
         else v.a[j] = v2.a[j-v1.size];
     }
     return v;
+}
+
+bool operator==(const Vettore& v1, const Vettore& v2){
+    if(v1.size != v2.size) return false;
+    // v1.size == v2.size
+    bool eq = true;
+    for(unsigned int i = 0; i < v1.size && eq; ++i)
+        eq = v1[i] == v2[i];
+    return eq;
 }
 
 
