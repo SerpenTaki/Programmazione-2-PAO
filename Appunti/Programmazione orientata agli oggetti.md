@@ -156,6 +156,86 @@ In alcuni casi, il tempo di vita di un oggetto coincide con il tempo di vita di 
 
 [[Distruttori]]
 
+### Conversioni di tipo
+- Conversioni **implicite** (coercions)
+- Conversioni **esplicite**
+- Conversioni **predefinite** dal linguaggio
+- Conversioni **definite dall'utente**
+- Conversioni **con/senza perdita** di informazione (*narrow/wide conversions*)
+
+An expression **e** is said to be **_implicitly convertible_** to **T** if and only if **T** can be copy-initialized from **e** that is, the declaration **`T t=e`** can be complied.
+
+#### Operatori di conversione esplicita
+- `static_cast`
+- `const_cast`
+- `reinterpret_cast`
+- `dynamic_cast`
+
+````
+//CONVERSIONI IMPLICITE "SAFE" (castless conversion)
+T& => T // e non viceversa int& x = 5
+T[] => T*     int[2] a={3,1}; int* p = a;
+T* => void* //generic pointer: int* p=&x; void* q=p;
+T => const T   int x=5; const int y=x;
+const NPR => NPR //NPR = Tipo NON Puntatore o Riferimento
+					//In particolare: C* const => C*
+const int x= 5; int y = x;
+int* const p = &z; int* q = p;
+
+
+T* => const T*  int*p = &x; const int* q=p;
+T => const T&   int x= 4; const int& r=x;
+//TRA TIPI PRIMITIVI
+
+bool => int
+float => double => long double
+char => short int => int => long
+unsigned char => ... => unsigned long
+````
+````C++
+//Esempio di narrowing conversion
+double d = 3.14;
+int x = static_cast<int>(d);
+//Esempio di wide conversion (coercion)
+char c = 'a';
+int x = static_cast<int>(c);
+//Esempio di conversione T* => void*
+void* p;
+p=&d;
+//per la conversione di void* serve uno static_cast
+double* q = static_cast<double*>(p);
+````
+
+##### Const_cast
+
+`const_cast<Type> (puntatore/riferimento)`
+
+`const_cast` permette di convertire *un puntatore o un riferimento* ad un tipo `const T` ad un puntatore o riferimento a `T` (quindi perdendo l'attributo `const`)
+
+````C++
+const int i = 5;
+int* p = const_cast<int*> (&i);
+
+void F(const C& x){
+	x.metodoCostante();
+	const_cast<C&>(x).metodoNonCostante();
+}
+
+int j=7;
+const int* q = &j; //OK, cast implicito
+````
+
+##### Reinterpret_cast
+`reinterpret_cast <T*> (puntatore)`
+`reinterpret_cast` si limita a reinterpretare a basso livello la sequenza di bit con cui è rappresentato il valore puntato da `puntatore` come fosse un valore di tipo `T`. Questo tipo di cast è particolarmente pericoloso
+````C++
+Classe C;
+int* p = reinterpret_cast<int*>(&c);
+const char* a = reinterpret_cast<const char*>(&c);
+string s(a);
+cout << s;
+````
+
 
 
 

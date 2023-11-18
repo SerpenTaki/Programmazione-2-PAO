@@ -39,3 +39,5 @@ Lo svantaggio è che se si modifica l'indirizzo di memoria a cui punta uno dei c
 Un'alternativa è la copia profonda. In questo caso i dati vengono effettivamente copiati. Il risultato è diverso da quello di una copia superficiale. Il vantaggio è che A e B non dipendono l'uno dall'altro **ma al costo di una copia più lenta e costosa**.
 
 [[Costruttori#Ridefinizione costruttore di copia]]
+
+

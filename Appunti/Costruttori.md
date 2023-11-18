@@ -415,3 +415,16 @@ bolletta Chiamate_A(int num, bolletta& b){
 1. Memoria di `resto` e `selezionate` non è deallocata
 2. `return selezionate`: oggetto ritornato costruito di copia, la memoria non viene deallocata
 
+#### Le copie profonde sono una soluzione ottimale?
+-> Soluzione costosa, inaccettabile, *a volte inutile*
+
+## Reference counting
+Il conteggio dei riferimenti è una tecnica di memorizzazione del numero di *referenze, puntatori o maniglie* a una risorsa come un oggetto, un blocco di memoria, uno spazio su disco o un'altra risorsa. Può anche riferirsi, più specificamente, a un algoritmo di garbage collection che utilizza questi conteggi di riferimento per deallocare gli oggetti che non sono più referenziati. 
+
+![[Pasted image 20231118172442.png]]
+
+SI incapsula in una classe il puntatore `nodo*` e si ridefinisce assegnazione, costruttore di copia e distruttore. Si definisce un cosidetto *smart pointer*. Gli smart pointer dovranno essere dotati di una interfaccia pubblica che permetta all'utente di utilizzarli come fossero puntatori ordinari.
+
+### Smart pointer
+Un **puntatore intelligente** è un *tipo di dati astratto* che simula un *puntatore*, fornendo al contempo caratteristiche aggiuntive, come la *gestione automatica della memoria* o il *controllo dei limiti*. Tali caratteristiche hanno lo scopo di ridurre i bug causati dall'uso improprio dei puntatori, pur mantenendo l'efficienza. I puntatori intelligenti di solito tengono traccia della memoria a cui puntano e possono anche essere usati per gestire altre risorse, come le connessioni di rete e gli handle dei file. I puntatori intelligenti sono nati nel linguaggio di programmazione C++ 11.
+
