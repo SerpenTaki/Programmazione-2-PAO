@@ -1,7 +1,7 @@
 Nella programmazione orientata agli oggetti, un **_distruttore_ è un _metodo_ che viene invocato meccanicamente appena prima che la memoria dell'oggetto venga rilasciata**. Può accadere quando il suo ciclo di vita è legato all'ambito e l'esecuzione esce dall'ambito, quando è incorporato in un altro oggetto il cui ciclo di vita termina, o quando è stato allocato dinamicamente e viene rilasciato esplicitamente. Il suo scopo principale è quello di liberare le risorse (allocazioni di memoria, file o socket aperti, connessioni a database, lock di risorse, ecc.) che sono state acquisite dall'oggetto durante la sua vita e/o di cancellarlo da altre entità che possono mantenere riferimenti ad esso.
 
 # Distruttore Standard
-È sempre disponibile il **distruttore standard**: invoca il "*distruttore*" per tutti i campi dati della classe, **nell'ordine inverso** alla loro dichiarazione `˜`
+È sempre disponibile il **distruttore standard**: invoca il "*distruttore*" per tutti i campi dati della classe, **nell'ordine inverso** alla loro dichiarazione `~`
 (*come se gli dovessi togliere da una pila praticamente....*)
 
 **È accettabile il distruttore standard nella classe bolletta? NO**
@@ -11,7 +11,7 @@ Distruttore della classe [[Telefonata e Bolletta]]:
 class bolletta{
 public:
 	..
-	˜bolletta(); //distruzione profonda....
+	~bolletta(); //distruzione profonda....
 	...
 }
 

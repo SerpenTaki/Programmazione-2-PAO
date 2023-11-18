@@ -189,4 +189,84 @@ Il comitato C++11 ha deciso di rimuovere **export** dallo standard . Rimane una 
 
 
 # Template di classe
+Se si vogliono usare sia code di interi che code di stringhe, si devono scrivere 2 definizioni distinte della classe e con 2 nomi diversi.
+````C++
+class QueueInt{
+public:
+	Queue();
+	~Queue();
+	bool empty() const;
+	void add(const int&);
+	int remove();
+private:
+	...
+};
 
+class QueueString{
+public:
+	Queue();
+	~Queue();
+	bool empty() const;
+	void add(const string&);
+	string remove();
+private:
+	...
+};
+````
+
+**TEMPLATE DI CLASSE `Queue<T>`**
+````C++
+template <class T>
+class Queue {
+public:
+	Queue();
+	~Queue();
+	bool empty() const;
+	void add(const T&);
+	T remove();
+private:
+...
+};
+
+Queue<int> qi;
+Queue<bolletta> qb;
+Queue<string> qs;
+````
+### Template di classe
+- Parametri di tipo
+- Parametri valore 
+- Parametri tipo/valore con **possibili valori di default**
+- Solo **istanziazione esplicita**
+````C++
+template <class Tipo = int, int size = 1024>
+class Buffer{
+...
+};
+
+Buffer<> ib; //Buffer<int,1024>
+Buffer<string> sb; //Buffer<string,1024>
+Buffer<string, 500> sbs; //Buffer<string, 500>
+````
+Completiamo il template `Queue<T>`
+````C++
+template <class T>
+class QueueItem{//per ora classe esterna
+public: //per ora tutto public
+	QueueItem(const T&);
+	T info;
+	QueueItem* next;
+};
+
+template <class T>
+class Queue{
+public:
+	Queue();
+	~Queue();
+	bool empty() const; //Queue e non Queue<T>
+	void add(const T&);
+	T remove();
+private:
+	QueueItem<T>* primo; //QueueItem<T>
+	QueueItem<T>* ultimo; //e non QueueItem
+};
+````
