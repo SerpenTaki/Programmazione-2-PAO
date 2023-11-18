@@ -2,12 +2,14 @@
 Vettore deve includere un costruttore di default, una operazione di concatenazione che restituisce
 un nuove vettore v1+v2, una operazione di append v1.append(v2), l'overloading dell'uguaglianza,
 dell'operatore di output e dell'operatore di output e dell'operatore di indicizzazione.
-Deve inoltre includere il costruttore di copia profonda, l'assegnazione profonda e la distruzione profonda.*/
+Deve inoltre includere il costruttore di copia profonda, l'assegnazione profonda e
+ la distruzione profonda.*/
+
 #include<iostream>
 
 class Vettore{
     friend Vettore operator+(const Vettore&, const Vettore&); //Le dichiarazioni di amicizia si mettono appena sotto la classe
-    friend bool operator==(const Vettore& v1, const Vettore& v2);
+   // friend bool operator==(const Vettore& v1, const Vettore& v2);
 
 private:
     int* a;
@@ -40,11 +42,18 @@ public:
         delete[] a;
     }
 
+    unsigned int getSize() const{
+        return size;
+    }
+
     void append(const Vettore& v){
         *this = *this + v;
     }
 
-    operator[] //15.55 lezione del 30 /10
+    int& operator[](unsigned int i) const{
+        // nessun controllo per i nell'essere dentro il bound
+        return a[i];
+    }
     
 };
 
@@ -58,14 +67,19 @@ Vettore operator+(const Vettore& v1, const Vettore& v2){
 }
 
 bool operator==(const Vettore& v1, const Vettore& v2){
-    if(v1.size != v2.size) return false;
+    if(v1.getSize() != v2.getSize()) return false; //v1.size != v2.size
     // v1.size == v2.size
     bool eq = true;
-    for(unsigned int i = 0; i < v1.size && eq; ++i)
-        eq = v1[i] == v2[i];
+    for(unsigned int i = 0; i < v1.getSize() && eq; ++i)
+        eq = v1[i] == v2[i]; //invoco Vettore::operator[]
     return eq;
 }
+//#include<iostream>
 
+std::ostream& operator<<(std::ostream& os, const Vettore& v){
+    for(unsigned j=0; j<v.getSize(); ++j) os << v[j] << ' ';
+    return os;
+}
 
 int main(){
     Vettore v1(4), v2(3,2), v3(5,-3);
