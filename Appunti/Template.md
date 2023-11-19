@@ -270,3 +270,150 @@ private:
 	QueueItem<T>* ultimo; //e non QueueItem
 };
 ````
+
+Nella dichiarazione o definizione di un template (*di classe o di funzione*) possono comparire sia nomi di istanze di template di classe sia nomi di template di classe.
+````C++
+template<class T>
+int fun(Queue<T>& qT, Queue<string> qs);
+	//Queue<T> template di classe associato
+	//Queue<string> istanza di template di classe
+````
+*Nota bene*: il compilatore genera una istanza di un template (*di classe o funzione*) **solo quando è necessario**. 
+Ad esempio il compilatore non genera l'istanza `Queue<int>` quando incontra le 2 seguenti occorrenze del nome dell'istanza:
+````C++
+//basta una dichiarazione incompleta di template
+template <class T> class Queue;
+
+void Stampa(const Queue<int& q){
+	Queue<int>* pqi = const_cast< Queue<int>* >(&q);
+	...
+}
+````
+Invece il compilatore è costretto a generare l'istanza del template di classe con
+````C++
+template <class T> class Queue{
+	//definizione della classe necessaria
+};
+
+void Stampa(Queue<int> q){
+	Queue<int> qi; //si genera per l'istanza Queue<int>
+	//per la costruzione di default
+}
+````
+il compilatore è pure costretto a generare l'istanza `Queue<int>` con
+````C++
+template <class T> class Queue{
+	//definizione
+};
+
+void Stampa(const Queue<int>& q){
+	Queue<int>* pqi = const_cast< Queue<int>* >(&q);
+	pqi++;
+	...
+}
+````
+perchè l'istanza serve per calcolare la quantità `sizeof(Queue<int>)` di cui occorre incremetare il puntatore per eseguire `pqi++`
+
+## Metodi di un template di classe
+In un template di classe è possibile definire metodi inline
+````C++
+template <class T>
+class Queue{
+...
+public:
+	Queue() : primo(0), ultimo(0) {}
+	...
+};
+````
+La **definizione esterna** di un metodo in un template di classe richiede la seguente sintassi:
+````C++
+template <class T>
+class Queue{
+...
+public:
+	Queue();
+	...
+};
+
+//definizione esterna
+template <class T>
+Queue<T>::Queue() : primo(0), ultimo(0) {}
+````
+Un metodo di un template di classe è un template di funzione.
+Esso non viene istanziato quando viene istanziata la classe **ma se e soltanto se** il programma usa effettivamente quel metodo.
+
+Completiamo la definizione del template  `Queue<T>`
+````C++
+// fiel Queue.h
+#ifndef QUEUE_H
+#define QUEUE_H
+
+template <class T>
+class QueueItem{
+public:
+	//per gli scopi di Queue basta questo costruttore
+	QueueItem(const T& val): info(val), next(0) {}
+	T info;
+	QueueItem* next;
+};
+
+template <class T>
+class Queue{
+public:
+	Queue() : primo(0), ultimo(0) {}
+	bool empty() const;
+	void add(const T&);
+	T remove();
+	/*Attenzione: distruttore, costruttore di copia e assegnazione profondi*/	
+	~Queue();
+	Queue(const Queue&);
+	Queue& operator=(const Queue&);
+private:
+	QueueItem<T>* primo; //primo el. della coda
+	QueueItem<T>* ultimo; //ultimo el. della coda
+};
+
+//Sempre nel file Queue.h
+
+template <class T>
+bool Queue<T>::empty() const{
+	return(primo==0);
+}
+
+template <class T>
+void Queue<T>::add(const T& val){
+	if(empty())
+		primo = ultimo = new QueueItem<T>(val);
+	else{//aggiunge in coda
+		ultimo->next = new QueueItem<T>(val);
+		ultimo = ultimo->next;
+	}
+}
+
+//NEL FILE Queue.h
+#include <iostream>
+template <class T>
+T Queue<T>::remove(){
+	if(empty()){
+		std::cerr << "remove() su coda vuota" << std::endl;
+		exit(1); //BAD PRACTICE
+	}
+	QueueItem<T>* p = primo;
+	primo = primo->next;
+	T aux = p->info;
+	delete p;
+	return aux;
+}
+
+template <class T>
+Queue<T>::~Queue(){//distruzione profonda
+	while(!empty()) remove();
+}
+#endif
+````
+
+### Amicizie in template di classe
+[[Amicizia#Amicizie in template di classe]]
+
+
+## Campi dati statici in template di classe

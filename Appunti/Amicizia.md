@@ -210,3 +210,106 @@ private:
 ````
 
 [[Overloading#Overloading operator->]]
+
+# Amicizie in template di classe
+**Dichiarazione nel template di classe `C` di una classe o funzione _friend non template_**
+````C++
+class A {... int fun(); ....};
+
+template<class T>
+class C{
+	friend int A::fun();
+	friend class B;
+	friend bool test();
+}
+````
+La classe `B`, la funzione `test()` e il metodo `A::fun()` della classe `A` sono `friend` di **tutte le istanza** del template di classe `C`.
+
+**Dichiarazione nel template di classe `C` di un template di classe `A`  o di funzione `fun` _friend associato_**
+````
+template <class U1, ...., class Uk> class A;
+template <class V1, ...., class Vj> void fun(...);
+template <class T1, ...., class Tn> class C {
+	friend class A<....,Tj,....>;
+	friend void fun<...,Tj,....>(...);
+};
+````
+
+**Dichiarazione nel template di classe `C` di un template di classe o di funzione _friend non associato_**
+````C++
+template<class T>
+class C {
+	template<class Tp> //amicizia con template
+	friend int A<Tp>::fun(); //di metodo
+
+	template<class Tp> //amicizia con template
+	friend class B; //di classe
+
+	template<class Tp> //amicizia con template
+	friend bool test(C<Tp>) //di funzione
+};
+````
+Alcuni compilatori pre-standard non supportavano quest'ultima tipologia di dichiarazioni `friend`. Il compilatore GNU `g++` supporta i template di classe e di funzione friend non associati.
+
+È naturale associare ad ogni istanza di `QueueItem` una sola istanza amica della classe `Queue`, ovvero quella associata.
+````C++
+template <class T>
+class QueueItem{
+	friend class Queue<T>;
+private:
+	T info;
+	QueueItem* next;
+	QueueItem(const T& val) : info(val), next(0) {}
+};
+````
+
+````
+template <class T>
+ostream& operator<<(ostream&, const Queue<T>&);
+````
+Di quali amicizie abbiamo bisogno?
+````C++
+template<class T>
+ostream& operator<<(ostream& os, const Queue<T>& q){
+	os << "(";
+	QueueItem<T>* p = q.primo; //amicizia con Queue
+	for(; p!=0; p = p->next) //amicizia con QueueItem
+		os << *p << " "; //operator<< per il tipo Queueitem
+	os << ")" << endl;
+	return os;
+}
+````
+Dobbiamo quindi dichiarare `operator<<` come funzione amica associata sia della classe `Queue` che della classe `Queueitem`
+````C++
+template <class T>
+class Queue{
+	friend ostream& operator<< <T> (ostream&, const Queue<T>&);
+	...
+};
+
+template <class T>
+class QueueItem {
+	friend osteam& operator<< <T> (osteam&, const Queue<T>&);
+	...
+};
+````
+
+Inoltre, dobbiamo definire `operator<<` per il template di classe `QueueItem`.
+````C++
+template <class T>
+ostream& operator<<(ostream& os, const QueueItem<T>& qi){
+	os << qi.info; //amicizia con QueueItem!
+					//NB: richiede operator<< sul tipo T
+	return os;
+}
+````
+Dobbiamo quindi dichiarare la funzione esterna `operator<<` di `QueueItem` come amica associata della classe `QueueItem`
+````C++
+template <class T>
+class QueueItem{
+	friend ostream& operator<< <T>(ostream&, const QueueItem<T>&);
+	...
+};
+````
+
+[[Template#Campi dati statici in template di classe]]
