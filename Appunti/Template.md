@@ -417,3 +417,12 @@ Queue<T>::~Queue(){//distruzione profonda
 
 
 ## Campi dati statici in template di classe
+Un campo dati statico intero che funzioni da contatore globale degli oggetti `QueueItem` presenti nelle liste di tutti gli oggetti di una *certa istanza* di `Queue`
+````C++
+template <class Tipo>
+class Queue {
+private:
+	static int contatore;
+	...
+};
+````
