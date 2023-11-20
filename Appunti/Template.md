@@ -426,3 +426,83 @@ private:
 	...
 };
 ````
+L'inizializzazione esterna alla classe ha la seguente forma:
+````C++
+template <class T>
+int Queue<T>::contatore = 0;
+````
+Un campo dati statico è istanziato e quindi inizializzato dalla definizione del template **soltanto se viene effettivamente usato**. La mera definizione di un campo dati statico non provoca allocazione di memoria.
+````C++
+template<int I> //parametro valore
+class C{
+	static int numero;
+public:
+	C() {++numero;}
+	C(const C& x) {++numero;}
+	static void stampa_numero();
+};
+
+//inizializzazione parametrica del campo statico
+template<int I>
+int C<I>::numero = I;
+
+template<int I>
+void C<I>::stampa_numero()
+{cout << "Valore statico: " << numero << endl;}
+
+int main(){
+	C<1> uno;
+	C<2> due_a;
+	C<3> due_b(due_a);
+	C<1>::stampa_numero(); //stampa: 2
+	C<2>::stampa_numero(); //stampa: 4
+}
+````
+````C++
+class A{
+public:
+	A(int x=0) {cout << x << "A() ";}
+};
+
+template<class T>
+class C{
+public:
+	static A s;
+};
+template<class T>
+A C<T>::s=A(); //stampa 0A()
+
+int main(){
+	C<double> c;
+	C<int> d;
+	C<int>::s = A(2);
+}
+//stampa: 0A() 2A()
+//NOTA BENE: non stampa 0A() 0A() 2A() !!
+````
+
+# Friend e classi annidate
+"Una classe annidata è un membro e come tale ha *gli stessi diritti di accesso di qualsiasi altro membro*. I membri di una classe racchiusa non hanno *nessun accesso speciale ai membri* di una classe annidata; devono essere rispettate le normali regole di accesso".
+
+e le regole di accesso abituali specificano che:
+
+"Un membro di una classe può accedere anche a tutti i nomi a cui la classe ha accesso...".
+
+## Classi annidate in template di classe
+Annidiamo nella parte privata del template di classe `Queue` la definizione del template di classe `QueueItem`
+````C++
+template <class T>
+class Queue{
+private:
+	//template di classe annidato ASSOCIATO
+	class QueueItem{
+	public:
+		QueueItem(const T& val);
+		T info;
+		QueueItem* next;
+	};
+	...
+};
+````
+`QueueItem<T>` è un cosidetto *tipo implicito*, in quanto non è un tipo completamente definito ma dipende implicitamente dai parametri di tipo `Queue<T>`
+
