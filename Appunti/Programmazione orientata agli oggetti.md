@@ -236,6 +236,10 @@ string s(a);
 cout << s;
 ````
 
-
-
+## Lo standard C++
+Prevede la definizione di:
+- Template di classi collezione: **contenitori**
+- Template di funzione: **algoritmi generici**
+-> Possibile trovarla su cplusplus.com
+-> Documentazione [[STL]] by cppreference.com
 

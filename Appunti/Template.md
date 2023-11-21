@@ -506,3 +506,4 @@ private:
 ````
 `QueueItem<T>` è un cosidetto *tipo implicito*, in quanto non è un tipo completamente definito ma dipende implicitamente dai parametri di tipo `Queue<T>`
 
+[[STL#Vector]]
