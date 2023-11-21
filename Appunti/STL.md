@@ -213,3 +213,40 @@ i = vs.begin() + vs.size()/2;
 vs.insert(i, vs1.begin(), vs1.end());
 ````
 **ATTENZIONE**: le operazioni di `insert()` possono risultare piuttosto *inefficienti* e ciò dipende dall'implementazione della classe `vector`
+
+Metodo `void pop_back()` di rimozione da un `vector`:
+````
+iterator erase (iterator position);
+iterator erase (iterator first, iterator last);
+````
+````C++
+vector<string> v;
+vector<string>::iterator i, j;
+...
+v.pop_back(); //toglie l'ultimo elemento
+v.erase(i); //toglie l'elemento puntato da i
+v.erase(i,j); //toglie tutti gli elementi compresi tra il puntatore i incluso e il puntatore j escluso, ovvero gli elementi nel segmento [*i, *j)
+````
+Su tutti i contenitori è definito `==`
+Su tutti i *contenitori sequenziali*(vector, list, deque) sono definiti gli operatori booleani relazionali `<` e `<=`
+````C++
+Cont<Tipo> x,y;
+
+x == y, x != y, x < y, x <= y, x> y, x >= y
+/*operatori relazionali per l'ordine lessicografico, Occorre che sul tipo base Tipo siano definiti i 2 operatori == e <
+ATTENZIONE: sui map confronta le coppie (chiave, valore)*
+````
+Il metodo di inserimento  `insert()`, nei suoi vari overloading, è disponibile per ogni contenitore: 
+````C++
+Cont<Tipo> x;
+Cont<Tipo>::iterator p;
+Tipo a;
+
+x.insert(p,a); //aggiunge l'elemento a prima della posizione puntata da p
+
+//In particolare:
+x.insert(x.begin(),a); //aggiunge a all'inizio
+x.insert(x.end(), a); //aggiunge a alla fine
+````
+
+//25_ s 9/39
