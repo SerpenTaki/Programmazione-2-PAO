@@ -249,4 +249,123 @@ x.insert(x.begin(),a); //aggiunge a all'inizio
 x.insert(x.end(), a); //aggiunge a alla fine
 ````
 
-//25_ s 9/39
+Per tutti i **contenitori sequenziali** `vector`, `deque`, `list` è definita l'operazione di inserimento in coda al contenitore `push_back`:
+````C++
+Cont<Tipo> x; //x vector, deque, list
+Tipo t;
+x.push_back(a); //aggiunge t alla fine di x
+````
+In ogni contenitore sequenziale (*vector, deque, list*) possiamo rimuovere un qualsiasi elemento tramite il metodo `erase()`:
+````C++
+Cont<Tipo> x;
+Cont<Tipo>::iterator p, q;
+
+x.erase(p); //toglie l'elemento puntato da p
+x.erase(p,q); //toglie tutti gli elementi nell'intervallo [p,q), cioè da p incluso fino a q escluso
+````
+In ogni contenitore sequenziale possiamo accedere al primo ed ultimo elemento con i metodi:
+````C++
+T& front();
+const T& front() const;
+
+T& back();
+const T& back() const;
+````
+````C++
+std::vector<int> v; v.push_back(8); v.push_back(3);
+v.front() -= v.back();
+v.back() += v.back();
+std::cout << v[0] << " " << v[1];
+//stampa: 5 6
+````
+
+L'[[Overloading]] dell'operatore di indicizzazione `operator[]` è disponibile **solamente** per i contenitori ad accesso casuale **`vector`** e **`deque`**
+````C++
+Cont<Tipo> x; //x vector o deque 
+int i = 3;
+Tipo e = x[i]; //elemento in posizione i-esima
+````
+Per portabilità, in generale per gli indici è preferibile usare il tipo interno al contenitore `Cont<Tipo>::size_type` (unsigned integral type):
+````C++
+Cont<Tipo> x;
+Cont<Tipo>::size_type i = 5;
+Tipo e = x[i]; //elemento in posizione i-esima
+````
+
+## Contenitore lista
+`list<Tipo>`
+È implementata come una **"doubly-linked list"**. A differenza di `vector` permette quindi di eseguire in tempo costante le operazioni di inserimento e rimozione di elementi in posizione arbitraria.
+
+È meno efficiente di `vector` nell'accesso agli elementi: infatti l'implementazione necessariamente deve percorrere la lista dall'inizio (o della fine): infatti l'implementazione necessariamente deve percorrere la lista dell'inizio (o dalla fine): **non è disponibile `operator[]`** 
+`forward_list<Tipo>` (C++11) o `slist<Tipo>` (C++03) è invece una lista implementata come una "**singly-linked list**"
+
+````C++
+vector<int> v;
+for(int i=0; i<500000;++i) v.insert(v.begin(), 0);
+//time: 9.31s         FRONT
+
+vector<int> v;
+for(int i=0; i<500000; ++i) v.insert(v.begin() + v.size()/2,0);
+//time: 4.62s         MIDDLE
+
+deque<int> d;
+for(int i=0; i<500000; ++i) d.insert(d.begin() + d.size()/2,0):
+//time: 11.61s        MIDDLE
+
+list<int> 1;
+for(int i=0; i<200000; ++i) l.insert(l.begin(),0);
+//time: 0.15s         FRONT
+
+vector<int> v;
+for(int i=0; i<9000000; ++i) v.push_back(0);
+//time: 0.45s
+
+list<int> l;
+for(int i=0; i<9000000; ++i) l.insert(l.begin(),0);
+//time: 2.52s
+````
+_GoingNative 2012 **Why you should  avoid linked list**_
+
+## Contenitore bidirezionale
+`deque<Tipo>`
+Si tratta del contenitore "*Double Ended Queue*", coda a 2 estremi (si legge "deck").
+
+Il contenitore deque unisce alcuni dei vantaggi principali del vector e della list. 
+1. Accesso indicizzato efficiente per lettura e scrittura come in un vector.
+2. Inserimento ed eliminazione agli estremi del contenitore sono efficienti come in una list.
+
+Il contenitore deque è tipicamente implementato mediante una struttura dati complessa che consiste di più array dinamici di dimensione fissa o di un buffer circolare. Rispetto al vector, le riallocazioni sono generalemente più efficienti.
+
+I **Contenitori associativi** permettono di accedere ad un elemento stesso o di una parte di tale valore, cioè la cossidetta *chiave* di accesso all'elemento. In ogni contenitore associativo **le chiavi sono mantenute ordinate**, quindi il tipo delle chiavi deve supportare l'operatore relazionale d'ordinamento `operator<`.
+
+### Contenitore insieme:
+`set<Tipo>`
+Modella il concetto matematico di insieme e quindi accetta solamente una occorrenza per ogni valore nell'insieme. La *chiave è costituita dal valore dell'elemento*. Quindi gli elementi contenuti nel set devono avere valori tutti distinti.
+
+### Contenitore multinsieme
+`multiset<Tipo>`
+
+La chiave è anche in questo caso data dal valore dell'elemento. Un multiset può contenere **occorrenze multiple dello stesso elemento**, ovvero più elementi con lo stesso valore.
+
+### Contenitore mappa: 
+`map<T1,T2>`
+Un elemento di map è costituito da una coppia (chiave, valore), ovvero da una chiave di accesso e fa un valore associato a tale chiave. Il tipo delle chiavi `T1` deve quindi supportare l'operatore relazionale d'ordinamento `operator<` Gli elementi contenuti nel map devono avere **chiavi tutte distinte**. Tipicamente, in un map **m** si accede al valore associato ad una chiava **k** tramite l'operatore di indicizzazione: `T2 x = m[k];`
+
+### Contenitore multimappa:
+`multimap<T1,T2>`
+Come in un map, il valore di un elemento di un multimap è costituito da una chiave e da un valore associato a tale chiave. La differenza è che un multimap può contenere più elementi con la stessa chiave.
+
+Nella libreria STL sono definiti anche un gran numero di algoritmi generici efficienti per i contenitori:
+````
+sort()
+count()
+copy()
+reverse()
+max_element()
+binary_search()...
+
+È necessaria la direttiva di inclusione #include<algorithm>
+````
+
+
+
