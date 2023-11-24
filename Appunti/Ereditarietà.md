@@ -311,5 +311,116 @@ int main(){
 
 # Ereditarietà e amicizia: le amicizie non si ereditano
 Falsa [[Amicizia]]
+````C++
+class C{
+private:
+	int i;
+public:
+	C(): i(1) {}
+	friend void print(C);
+};
 
-//28 38/42
+class D: public C{
+private:
+	double z;
+public:
+	D(): z(3.14) {}
+};
+
+void print(C x){
+	cout << x.i << endl;
+	D d;
+//cout << d.z << endl; //illegale
+//"D::z is private within this context"
+}
+
+int main(){
+	C c; D d;
+	print(c); //stampa 1
+	print(d); // Ok, stampa 1
+}
+````
+````C++
+class C{
+	friend class Z;
+private:
+	int i;
+public:
+	C(): i(1) {}
+};
+
+class D: public C {
+private:
+	double z;
+public:
+	D(): z(3.14) {}
+};
+
+class Z {
+public:
+	void m() {C c; D d; cout << c.i; //OK
+	cout << d.z; //ILLEGALE: "D::z is private within this context"
+	}
+};
+
+int main(){
+	Z z;
+	z.m(); //stampa: 1
+}
+````
+````C++
+class C{
+private:
+	int i;
+public:
+	C(): i(1) {}
+	friend void print(C);
+};
+void print(C x) {cout << x.i << endl;}
+
+class D: public C{
+private:
+	double z;
+public:
+	D(): z(3.14) {}
+	friend void print(D);
+};
+void print(D x) {cout << x.z << endl;}
+
+int main() {
+	C c; D d;
+	print(c); //stampa 1
+	print(d); //stampa 3.14
+}
+````
+#### Sul significato di inaccessibile
+````C++
+class C{
+private:
+	int i;
+public:
+	C(): i(1) {}
+	void print() {cout << ' ' << i;}
+};
+
+class D: public C {
+private:
+	double z;
+public:
+	D(): z(3.14) {}
+	void print() {
+		C::print(); //l'oggetto di invocazione di C::print() è il sottooggetto di tipo C dell'oggetto di invocazioen
+		//cout << ' ' << this->i; //membro i INACCESSIBILE
+		cout << ' ' << z;
+	}
+};
+
+int main() {
+	C c; D d;
+	c.print(); cout << endl; //stampa 1
+	d.print(); cout << endl; //stampa 1 3.14
+}
+````
+
+# Sul significato di protected
+29
