@@ -428,3 +428,28 @@ SI incapsula in una classe il puntatore `nodo*` e si ridefinisce assegnazione, c
 ### Smart pointer
 Un **puntatore intelligente** è un *tipo di dati astratto* che simula un *puntatore*, fornendo al contempo caratteristiche aggiuntive, come la *gestione automatica della memoria* o il *controllo dei limiti*. Tali caratteristiche hanno lo scopo di ridurre i bug causati dall'uso improprio dei puntatori, pur mantenendo l'efficienza. I puntatori intelligenti di solito tengono traccia della memoria a cui puntano e possono anche essere usati per gestire altre risorse, come le connessioni di rete e gli handle dei file. I puntatori intelligenti sono nati nel linguaggio di programmazione C++ 11.
 
+# Costruttori nelle classe derivate
+La lista di inizializzazione di un costruttore di una classe `D` derivata direttamente da `B` in generale può contenere invocazioni di costruttori per i campi dati (propri) di `D` e l'invocazione di un costruttore della classe base `B`.
+
+L'esecuzione di un tale costruttore di `D` avviene nel seguente modo:
+1. Viene sempre e comunque invocato per primo un costruttore della classe base `B`, o esplicitamente o implicitamente il costruttore di default di `B` quando la lista di inizializzazione non include una invocazione esplicita;
+2. Successivamente, secondo il comportamento già noto, viene eseguito il costruttore "proprio" di `D`, ossia vengono costruiti i campi dati propri di `D`;
+3. Infine viene eseguito il corpo del costruttore.
+
+In particolare, se nella classe derivata `D` si omette qualsiasi costruttore allora, come al solito, è disponibile il **costruttore di default standard** di `D`. Il suo comportamento è quindi il seguente:
+1) Richiama il costruttore di default di B;
+2) Successivamente si comporta come il costruttore di default "proprio" di `D`, ossia richiama i costruttori per tutti i campi dati di `D`
+````C++
+dataora::dataora(): giorno(1), mese(1), anno(2000) {}
+
+dataora d;
+cout d.Ore(); //stampa: 0
+cout d.Giorno(); //stampa: 1
+````
+È naturale definire il seguente costruttore con parametri per la classe derivata `dataora`
+````C++
+dataora::dataora(int a, int me, int g, int o, int m, int s) : orario(o,m,s), giorno(g), mese(me), anno(a) {}
+````
+````C++
+
+````

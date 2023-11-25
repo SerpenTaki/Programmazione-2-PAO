@@ -423,4 +423,222 @@ int main() {
 ````
 
 # Sul significato di protected
-29
+````C++
+class B{
+protected:
+	int i;
+	void protected_printB() const {cout << ' ' << i;}
+public:
+	void printB() const {cout << ' ' << i;}
+};
+
+class D: public B{
+private:
+	double z;
+public:
+	void stampa() {
+		cout << i << ' ' << z; //OK
+	}
+
+	static void stampa(const B& b, const D& d){
+		cout << ' ' << b.i; //Illegale: "B::i is protected within this context"
+		b.printB(); //OK
+		b.protected_printB(); //ILLEGALE: "B::protected_printB() is protected within this context"
+		cout << ' ' << d.i; //OK
+		d.printB(); //OK
+		d.protected_printB(); //OK
+	}
+};
+````
+### Ridefinizione di metodi
+Potrebbe avere senso ridefinire nella classe derivata alcune funzionalità ereditate dalla classe base.
+I metodi sono concepiti come dai contratti, quindi l'implementazione di un contratto della classe base potrebbe richiedere **variazioni o adattamenti** nella classe derivata
+
+**Ridefinizione di orario::operator+**
+````C++
+dataora dataora::operator+(const orario& o) const{
+	dataora aux = *this;
+	//Attenzione:
+	//aux.sec = sec + o.sec; //darebbe un errore di compilazione!
+	//perchè anche se sec è dichiarato protected in orario, o.sec è comunque inaccessibile in dataora
+	aux.sec = sec + 3600*o.Ore() + 60*o.Minuti() + o.Secondi();
+	if (aux.sec >= 86400){
+		aux.sec = aux.sec - 86400;
+		aux.AvanzaUnGiorno();
+	}
+	return aux;
+}
+
+void dataora::AvanzaUnGiorno(){//metodo proprio
+	if (giorno < GiorniDelMese()) giorno++;
+	else if (mese < 12) {giorno = 1; mese++;}
+	else {giorno = 1; mese = 1; anno++;}
+}
+````
+Possiamo invocare l'operatore + di `orario` o `dataora` nel modo seguente:
+````C++
+orario o1, o2;
+dataora d1, d2;
+o1 + o2; //invoca orario::operator+
+d1 + d2; //incvoca dataora::operator+
+o1 + d2; //invoca orario::operator+
+d1 + o2; //invoca dataora::operator+
+orario y = d1 + d2; //OK
+dataora x = o1 + o2; //ILLEGALE
+d1.orario::operator+(d2); //invoca orario::operator+
+````
+
+### Name hiding rule
+Una ridefinizione in `D` del nome di metodo `m()` nasconde sempre tutte le versioni sovraccaricate di `m()` disponibili in `B`, che non sono quindi direttamente accessibili in `D` ma solamente tramite l'operatore di scoping `B::`
+
+Se ridefiniamo il metodo `Ore` in `dataora` con segnatura:
+````C++
+int dataora::Ore(int) const{
+	...
+}
+````
+non possiamo più scrivere:
+````C++
+dataora d;
+cout << d.Ore(); //ILLEGALE
+````
+Perchè il "vecchio" metodo `Ore` della classe `orario` è **mascherato** in `dataora` dalla ridefinizione. Per l'accesso possiamo però usare l'operatore di scoping:
+````C++
+dataora d;
+cout << d.orario::Ore();
+````
+
+#### Ridefinizione di campi dati
+````C++
+class B{
+protected:
+	int x;
+public:
+	B() : x(2) {}
+	void print() {cout << x << endl;}
+};
+
+class D: public B {
+private:
+	double x; //ridefinizione del campo dati x
+public:
+	D() : x(3.14) {}
+	//ridefinizione di print()
+	void print() {cout << x << endl;} // è D::x
+	void printAll() {cout << B::x << ' ' << x << endl;}
+};
+
+main(){
+	B b; D d;
+	b.print(); //stampa: 2
+	d.print(); //stampa: 3.14
+	d.printAll(); //stampa 2 3.14
+}
+````
+
+#### Static binding nell'invocazione di metodi
+![[Pasted image 20231125155742.png]]
+````C++
+class Base {
+	int x;
+public:
+	void f() {x=2;}
+};
+class Derivata:  public Base {
+	int y;
+public:
+	void f() {Base::f(); y=3;} //ridefinizione
+};
+
+int main() {
+	Base b; Derivata d;
+	Base* p = &b;
+	p->f(); //invoca Base::f()
+	p=&d; //Derivata* è il tipo dinamico di p
+	p->f(); //cosa invoca?
+} //Base::f()
+````
+````C++
+class B{
+public:
+	int f() const {cout << "B::f()\n"; return 1;}
+	int f(string) const {cout << "B::f(string)\n"; return 2;}
+};
+
+class D : public B{
+public:
+	//ridefinizione con la stessa segnatura
+	int f() const {cout << "D::f()\n"; return 3;}
+};
+
+class E : public B {
+public:
+	//ridefinizione con cambio del tipo di ritorno
+	void f() const {cout << "E::f()\n";}
+};
+
+class H : public B {
+public:
+	//ridefinizione con cambio lista argomenti
+	int f(int) const {cout << "H::f()\n"; return 4;}
+};
+
+int main(){
+	string s; B b; D d; E e; H h;
+	int x = d.f(); //stampa: D::f()
+	//d.f(s); //ILLEGALE
+	//x = e.f(); //ILLEGALE
+	//x = h.f(); //ILLEGALE
+	x = h.f(1); //stampa: H::f()
+}
+````
+````C++
+class C{
+public:
+	void f(int x){ }
+	void f() { }
+};
+class D: public C {
+	int y;
+public:
+	void f(int x) {f(); y=3+x;}
+	//Illegale
+	//"no matching function for D::f()"
+};
+````
+````C++
+class C{
+public:
+	void f() {cout << "C::f\n";}
+};
+
+class D: public C{
+public:
+	void f() {cout << "D::f\n";}; //ridefinizione
+};
+
+class E: public D{
+public:
+	void f() {cout << "E::f\n";}; //ridefinizione
+};
+
+int main(){
+	C c; D d; E e;
+	C* pc = &c; E* pe = &e;
+	c = d; //OK conversione D => C
+	c = e; //OK E => C
+	d = e; //OK E => D
+	C& rc = d, //OK D => C
+	D& rd = e; //OK E => D
+	pc->f(); //OK
+	pc = pe; //OK E* => C*
+	rd.f(); //OK
+	c.f(); //OK
+	pc->f(); //OK
+}
+````
+
+# Costruttori, distruttori, assegnazioni nelle classi derivate
+
+![[Pasted image 20231125164121.png]]
+[[Costruttori#Costruttori nelle classe derivate]]
