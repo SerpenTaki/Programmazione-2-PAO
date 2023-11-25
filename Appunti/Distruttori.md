@@ -240,8 +240,7 @@ ostream& operator<<(ostream& os, bolletta b){
 
 [[Amicizia]]
 
-
-
+# Distruttore standard nelle classi derivate
 
 
 

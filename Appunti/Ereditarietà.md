@@ -642,3 +642,4 @@ int main(){
 
 ![[Pasted image 20231125164121.png]]
 [[Costruttori#Costruttori nelle classe derivate]]
+[[Distruttori#Distruttore standard nelle classi derivate]]

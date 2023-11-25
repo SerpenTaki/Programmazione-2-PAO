@@ -451,5 +451,223 @@ cout d.Giorno(); //stampa: 1
 dataora::dataora(int a, int me, int g, int o, int m, int s) : orario(o,m,s), giorno(g), mese(me), anno(a) {}
 ````
 ````C++
+dataora d(2020, 11, 17, 11, 55, 13);
+cout << d.Ore(); //stampa: 11
+cout << d.Giorno(); //stampa: 17
+````
+**ESEMPIO 1**
+````C++
+class z{
+public:
+	Z() {cout << "Z0";}
+};
 
+class C {
+private:
+	int x;
+public:
+	C(int z=1) : x(z) {cout << "C01 ";}
+};
+
+class D: public C{
+private:
+	int y;
+	Z z;
+};
+
+int main() {
+	D d; //costruttore standard
+}
+//stampa: C01 Z0
+````
+````C++
+class Z {
+public:
+	Z() {cout << "Z0 ";}
+	Z(double d) {cout << "Z1 ";}
+};
+
+class C {
+private:
+	int x;
+	Z w;
+public:
+	D(): y(0) {cout << "D0 ";}
+	D(int a): y(a), z(3.14), C(a) {cout << "D1 ";}
+};
+
+int main(){
+	D d; cout << "UNO\n";
+	D e(4); cout << "DUE";
+}
+// stampa:
+// Z1 8 Z0 D0 UNO
+// Z0 4 C1 Z1 D1 DUE
+````
+
+## Costruttore di copia standard nelle classi derivate
+````C++
+class z{
+public:
+	Z() {cout << "Z0";}
+	Z(const Z& x) {cout << "Zc ";}
+};
+
+class C {
+private:
+	Z w;
+public:
+	C() {cout << "C0 ";}
+	C(const C& x): w(x.w) {cout << "Cc ";}
+};
+
+class D: public C{
+private:
+	Z z;
+public:
+	D() {cout << "D0 ";}
+	// costruttore di copia standard
+};
+
+int main() {
+	D() {cout << "D0 ";} //costruttore di copia standard
+}
+//stampa: Z0 C0 D0 UNO
+//stampa: Zc Cc Zc DUE
+````
+````C++
+class Z {
+public:
+	Z() {cout << "Z0 ";}
+	Z(const Z& x) {cout << "Zc ";}
+};
+
+class C {
+private:
+	Z w;
+public:
+	C(): y(0) {cout << "C0 ";}
+	C(const C& x): w(x.w) {cout << "Cc ";}
+};
+
+class D: public C{
+private:
+	Z z;
+public:
+	D() {cout << "D0 ";}
+	D(const D& x) {cout << "Dc ";} //ridefinizione costr.copia
+};
+
+int main(){
+	D d; cout << "UNO\n";
+	D e = d; cout << "DUE"; // costruttore di copia ridefinito
+}
+// stampa:
+// Z0 C0 Z0 D0 UNO
+// Z0 C0 Z0 Dc DUE //ATTENZIONE!!!
+````
+
+# Assegnazione standard nelle classi derivate
+````C++
+class Z {
+public:
+	Z() {cout << "Z0 ";}
+	Z(const Z& x) {cout << "Zc ";}
+	Z& operator=(const Z& x) {cout << "Z= "; return *this;}
+};
+
+class C{
+protected:
+	Z w;
+public:
+	C() {cout << "C0 ";}
+	C(const C& x): w(x.w) {cout << "Cc ";}
+	C& operator=(const C& x) {w=x.w; cout << "C= "; return *this;}//<----
+};
+
+class D: public C {
+private:
+	Z z;
+public:
+	D() {cout << "D0 ";}
+	D(const D& x) {cout << "Dc ";}
+};
+int main() {
+	D d; cout << "UNO\n";
+	D e; cout << "DUE\n";
+	e=d; cout << "TRE"; //assegnazione standard
+}
+/* STAMPA:
+Z0 C0 Z0 D0 UNO
+Z0 C0 Z0 D0 DUE
+Z= C= Z= TRE
+*/
+````
+````C++
+class Z {
+public:
+	int x;
+	Z(): x(0) {cout << "Z0 ";}
+	Z(const Z& x) {cout << "Zc ";}
+	Z& operator=(const Z& x) {cout << "Z= "; return *this;}
+};
+
+class C{
+public:
+	Z w;
+	C() {cout << "C0 ";}
+	C(const C& x): w(x.w) {cout << "Cc ";}
+	C& operator=(const C& x) {w=x.w; cout << "C= "; return *this;}
+};
+class D: public C {
+public:
+	Z z;
+	D() {cout << "D0 ";}
+	D(const D& x) {cout << "Dc ";}
+	D& operator=(const D& x) {z=x.z; cout << "D= "; return *this;}
+	// assegnazione definita male: chi ci pensa ad assegnare il campo dati w di C? e se w fosse private?
+};// assegnazione ben definita x=w.x z=x.z;
+int main() {
+	D d; d.w.x = 3; cout << "UNO\n";
+	D e; e.w.x = 5; cout << "DUE\n";
+	e=d; cout << "TRE\n";
+	cout << e.w.x << ' ' << d.w.x << " QUATTRO";
+}
+/* STAMPA:
+Z0 C0 Z0 D0 UNO
+Z0 C0 Z0 D0 DUE
+Z= D= TRE
+5 3 QUATTRO
+*/
+````
+````C++
+/*ESEMPIO IMPORTANTISSIMO*/
+class B{
+private:
+	int x;
+public:
+	B(int k=1): x(k) {}
+	B& operator=(const B& a) {x=a.x;}
+	void print() const {cout << "x="<<x;}
+};
+class D: public B {
+private:
+	int z;
+public:
+	D(int k=2): B(k), z(k) {}
+	//assegnazione con comportamento standard
+	D& operator=(const D& x){
+		this->B::operator=(x); // assegnazione per sottooggetto IMPORTANTE
+		z = x.z;
+	}
+	void print() const {B::print(); cout<< " z="<< z;}
+};
+
+int main() {
+	D d1(4), d2(5);
+	d1.print(); cout << endl; // x=4 z=4
+	d2.print(); cout << endl; // x=5 z=5
+	d1=d2;
+	d1.print(); // x=5 z=5
+}
 ````
