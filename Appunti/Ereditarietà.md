@@ -643,3 +643,130 @@ int main(){
 ![[Pasted image 20231125164121.png]]
 [[Costruttori#Costruttori nelle classe derivate]]
 [[Distruttori#Distruttore standard nelle classi derivate]]
+
+# Esempio di derivazione
+Esempio classe poligono
+````mermaid
+flowchart TD
+	A[Poligono] --> B[Quadrilatero]
+	A[Poligono] --> C[Triangolo]
+	B[Quadrilatero] --> D[Deltoide]
+	B[Quadrilatero] --> E[Trapezio]
+	B[Quadrilatero] --> F[parallelogramma]
+	F[parallelogramma] --> G[rettangolo]
+	F[parallelogramma] --> H[rombo]
+	G[rettangolo] --> I[quadrato]
+	H[rombo] --> I[quadrato] 
+	C[Triangolo] --> L[scaleno]
+	C[Triangolo] --> M[isoscele]
+	M[isoscele] --> N[equilatero]
+````
+
+````C++
+//file pol.h
+#ifndef POL_H
+#define POL_H
+
+class punto {
+private:
+	double x, y;
+public:
+	punto(double a=0, double b=0): x(a), y(b) {}
+	//metodo statico che calcola la distanza tra 2 punti
+	static double lung(const punto& p1, const punto& p2);
+};
+
+class poligono{
+protected:
+	unsigned int nvertici;
+	punto* pp; //array dinamico di punti, nessun controllo di consistenza
+public:
+	//si assume v array ordinato degli n vertici
+	poligono(unsigned int n, const punto v[]);
+	~poligono(); //distruttore profondo
+	poligono(const poligono&); //copia profonda
+	poligono& operator=(const poligono&); //assegnazione profonda
+	double perimetro() const; //ritorna il perimetro del poligono
+};
+#endif
+
+//file pol.cpp
+//HomeWork
+````
+````C++
+//file ret.h
+#ifndef RET_H
+#define RET_H
+#include "pol.h"
+class rettangolo: public poligono{ //rettangolo è un poligono specializzato
+public:
+	rettangolo(const punto v[]); //nvertici == 4
+	double perimetro() const; //ridefinizione
+	double area() const; //metodo proprio di rettangolo
+};
+#endif
+//file ret.cpp
+#include "ret.h"
+
+//NB: nessun controllo che i punti di v formino un rettangolo
+rettangolo::rettangolo(const punto v[]) : poligono(4, v) {}
+
+//specializzazione della funzionalità di calcolo del perimetro
+double rettangolo::perimetro() const{
+	double base = punto::lung(pp[1], pp[0]);
+	double altezza = puntoç::lung(pp[2], pp[1]);
+	return ((base + altezza)*2);
+}
+
+double rettangolo::area() const{
+	double base = punto::lung(pp[1], pp[0]);
+	double altezza = punto::lung(pp[2], pp[1]);
+	return (base*altezza);
+}
+````
+````C++
+//file ret.h
+#ifndef RET_H
+#define RET_H
+#include "pol.h"
+class rettangolo: public poligono{ //rettangolo è un poligono specializzato
+public:
+	rettangolo(const punto v[]); //nvertici == 4
+	double perimetro() const; //ridefinizione
+	double area() const; //metodo proprio di rettangolo
+};
+#endif
+````
+````C++
+#ifndef QUA_H
+#define QUA_H
+#include "ret.h"
+//quadrato è un rettangolo specializzato
+class quadrato: public rettangolo{
+public:
+	quadrato(const punto v[]); //invoca quello di rettangolo
+	double perimetro() const; //ridefinizione
+	double area() const; //ridefinizione
+};
+#endif
+
+//File qua.cpp
+#include "qua.h"
+//nessun controllo che i punti di v formino un quadrato
+quadrato::quadrato(const punto v[]) : rettangolo(v) {}
+
+// specializzazione della funzionalità di calcolo del perimetro
+double quadrato::perimetro() const{
+	double lato = punto::lung(pp[1], pp[0]);
+	return (lato *4):
+}
+
+//specializzazione della funzionalità di calcolo dell'area
+double quadrato::area() const{
+	double lato = punto::lung(pp[1], pp[0]);
+	return (lato*lato);
+}
+````
+````C++
+
+````

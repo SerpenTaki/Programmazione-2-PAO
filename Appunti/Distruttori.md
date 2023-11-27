@@ -241,6 +241,58 @@ ostream& operator<<(ostream& os, bolletta b){
 [[Amicizia]]
 
 # Distruttore standard nelle classi derivate
+````C++
+class Z{
+public:
+	Z() {cout << "Z0 ";}
+	~Z() {cout << "~Z ";}
+};
 
+class C {
+private:
+	Z w;
+public:
+	C() {cout << "C0 ";}
+	~C() {cout << "~C ";}
+};
+
+class D: public C{
+private:
+	Z z;
+public:
+	D() {cout << "D0 ";}
+};
+
+int main(){
+	D* p = new D; cout << "UNO\n";
+	delete p; cout << "DUE"; //distruttore standard
+}
+// Z0 C0 Z0 D0 UNO
+// ~Z ~C ~Z DUE
+````
+````C++
+class Z{
+public:
+	Z() {cout << "Z0 ";}
+	~Z() {cout << "~Z ";}
+};
+
+class C{
+private:
+	Z w;
+public:
+	D() {cout << "D0 ";}
+	~D() {cout << "~D ";}
+};
+
+int main() {
+	D* p = new D; cout << "UNO\n";
+	delete p; cout << "DUE"; //distruttore ridefinito
+}
+/*STAMPA
+	Z0 C0 Z0 D0 UNO
+	~D ~Z ~C ~Z DUE
+*/
+````
 
 
