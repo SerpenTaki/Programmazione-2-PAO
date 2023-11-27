@@ -296,3 +296,4 @@ int main() {
 ````
 
 
+[[Virtual Method Table#Distruttori Virtuali]]
