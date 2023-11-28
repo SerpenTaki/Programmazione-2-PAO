@@ -61,3 +61,109 @@ int main(){
 ````
 
 # Upcasting and Downcasting
+
+Nell'OOP, il **downcasting** o raffinamento dei tipi è l'atto di *casting* di un riferimento di una classe base a una delle sue classi derivate.
+
+In molti linguaggi di *pogrammaizzazione*, è possibile verificare attraverso *l'introspezione del tipo* se il tipo dell'oggetto a cui si fa riferimento è effettivamente quello a cui viene fatto il cast o un suo tipo derivato, e quindi emettere un errore in caso contrario.
+
+In altre parole. Quando una variabile della classe base (*classe madre*) ha un valore della classe derivata (*classe figlia*), è possibile eseguire il downcasting.
+
+````
+B tipo polimorfo, D <= B//minore uguale
+B* p puntatore polimorfo
+Downcast B* => D* B& => D&//conversione => non >=
+
+dynamic_cast<D*>(p) != 0
+se e solo se
+TD(p) <= D* //minore uguale //Tipo dinamico di p compatibile con il tipo target D*
+````
+Nel caso dei riferimenti, se il `dynamic_cast` di un riferimento fallisce allora viene sollevata un'eccezione di tipo `std::bad_cast` (definito nel file header `typeinfo`).
+````C++
+class X {public: virtual ~X() {} };
+class B {public: virtual ~B() {} };
+class D : public B {};
+
+#include<typeinfo>
+#include<iostream>
+
+int main() {
+	D d;
+	B& b = d; //upcast
+	try {
+		X& xr = dynamic_cast<X&>(b);
+	} catch(std::bad_cast e){
+		std::cout << "Cast fallito!" << std:endl;
+	}
+}
+````
+**Downcasting**
+````C++
+class B {//classe base polimorfa
+public:
+	virtual void m();
+};
+class D : public B {
+public:
+	virtual void f(); //nuovo metodo virtuale
+};
+class E: public D{
+	void g(); //nuovo metodo
+};
+
+B* fun() {/*può ritornare B*, D*, E*,...**/}
+
+int main(){
+	B* p = fun(); 
+	if(dynamic_cast<*D>(p))/*Downcast possibile*/ (static_cast<D*/*Downacast*/>(p))->f();
+	E* q = dynamic_cast<E*>(p);
+	if(q) q->g();//downcast ha successo
+} 
+````
+### Criticism
+Molti sostengono di evitare il downcasting, poiché, secondo la LSP, un progetto OOP che lo richiede è difettoso. Alcuni linguaggi, come OCaml, rifiutano del tutto il downcasting.
+
+## Downcasting vs metodi virtuali
+- Usare il downcast **solo quando necessario**
+- **non fare** type checking dinamico inutile
+- ove possibile *usare metodi virtuali nelle classi base* piuttosto che fare type checking dinamico
+##### Pattern
+````mermaid
+flowchart TD
+A[D1] --> B[Base]
+D[D2] --> B
+C[D3] --> B
+````
+````C++
+class Base{
+public:
+	virtual ~Base() {}
+	void do_Base_things() {}
+};
+
+class D1: public Base {
+public:
+	void do_D1_things() {}
+};
+class D2: public Base {
+public:
+	void do_D2_things() {}
+};
+class D3: public Base{
+public:
+	void do_D3_things() {}
+};
+
+void fun(Base& rb){
+	rb.do_Base_things();
+	if (D1* p1 = dynamic_cast<D1*> (&rb))
+		p1->do_D1_things();
+	else if (D2* p2 = dynamic_cast<D2*> (&rb))
+		p2->do_D2_things();
+	else if (D3* p3 = dynamic_cast<D3*> (&rb))
+		p3->do_D3_things();
+}
+````
+
+
+
+

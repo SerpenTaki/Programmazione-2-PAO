@@ -243,3 +243,12 @@ Prevede la definizione di:
 -> Possibile trovarla su cplusplus.com
 -> Documentazione [[STL]] by cppreference.com
 
+## Evoluzione del programmatore C++
+-> Una versione migliore del C
+-> Il secondo passo è OOP object based C++
+- Rimanere bloccati qui perchè ci arrivi troppo velocemente 
+- Non rimanere bloccato qui perchè perdi il lato migliore del linguaggio che è il vero arrivo verso l'OOP. Con le funzioni virtuali
+-> Concetto di virtual function
+- Se non le usi non hai capito l'OOP
+- Non c'è nulla come le funzioni virtuali nella programmazione procedurale
+
