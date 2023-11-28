@@ -252,3 +252,36 @@ Prevede la definizione di:
 - Se non le usi non hai capito l'OOP
 - Non c'è nulla come le funzioni virtuali nella programmazione procedurale
 
+# Perchè i metodi virtuali
+[[Virtual Method Table]]
+A questo punto potreste avere una domanda: "*Se questa tecnica è così importante, e se fa sempre la chiamata di funzione 'giusta', perché è un'opzione? Perché ho bisogno di conoscerla?".
+
+La risposta fa parte della filosofia fondamentale del C++: "Perché non è altrettanto efficiente".
+Alcuni linguaggi OO hanno adottato l'approccio secondo cui il binding tardivo è talmente intrinseco all'OOP che dovrebbe avvenire sempre, non dovrebbe essere un'opzione e l'utente non dovrebbe saperlo.
+
+Per questo motivo, la parola chiave **virtual** viene fornita per ottimizzare l'efficienza.
+# SOLID (object-oriented design)
+Nella *programmazione informatica*, **SOLID (Single Responsibility Open-closed, Liskov substitution, Interface segregation and Dependency Inversion)** è un *acronimo mnemonico* introdotto da Micheal Feathers. Sta per cinque principi fondamentali dell'OOP e del *design*. I principi, se applicati insieme, mirano a rendere più probabile che un *programmatore* crei un sistema facile da **mantenere** e da estendere nel tempo.
+
+#Mantenibilità
+#Estensibilità
+
+**S**
+- Single responsibility principle
+	- A class should have only a single responsibility
+**O**
+- Open/closed principle
+	- Open for extension, but closed for modification
+	- Alistair Cockburn: Indentify points of predicted variation and create a stable interface around them...
+**L**
+- Liskov substitution principle
+	- Replace objects with instances of their subtypes without altering the correctness of that program
+**I**
+- Interface segregation principle
+	- Many client-specific interfaces are better than one general-purpose interface
+**D**
+- Dependency inversion principle
+	- Abstractions should not depend on details
+	- Don't depend on anything concrete
+		- Work with interfaces
+
