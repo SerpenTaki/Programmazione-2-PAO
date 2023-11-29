@@ -285,4 +285,3 @@ Nella *programmazione informatica*, **SOLID (Single Responsibility Open-closed, 
 	- Don't depend on anything concrete
 		- Work with interfaces
 
-fff
