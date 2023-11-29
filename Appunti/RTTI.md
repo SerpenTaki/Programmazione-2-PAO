@@ -37,7 +37,7 @@ public:
 1. Se l'espressione operando di `typeid` è un riferimento `ref` ad una classe che **contiene almeno un metodo virtuale**, cioè una **classe polimorfa**, allora `typeid` restituisce un oggetto di `type_info` che rappresenta il tipo dinamico di `ref`
 2. Se l'espressione operando di `typeid` è un puntatore **dereferenziato** `*punt`, dove `punt` è un puntatore ad un **tipo polimorfo**, allora `typeid` restituisce un oggetto di `type_info` che rappresenta il tipo `T` dove `T*` è il tipo dinamico di `punt`
 **ATTENZIONE**:
-1) Se la classe non contiene metodi virtuali allora `typeid` restituisce il tipo statico del riferimento o del puntatore dereferenziato
+1) Se la [[Classi]] non contiene metodi virtuali allora `typeid` restituisce il tipo statico del riferimento o del puntatore dereferenziato
 2) `typeid` su un puntatore (non dereferenziato) restituisce sempre il tipo statico del puntatore
 ````C++
 class A {public: virtual ~A() {} };

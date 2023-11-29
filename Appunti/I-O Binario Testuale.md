@@ -72,8 +72,8 @@ Tutti gli operatori di input **ignorano le spaziature** (cioè spazi, tab, enter
 `fail==1 e bad==0`
 
 Definire un overloading di `operator>>` per qualche *classe `C`* significa dare un significato alla conversione *sequenza di byte => oggetto di C*. Cioè significa fare del **parsing** di una sequenza di byte di input secondo le regole di rappresentazione sintattica degli oggetti di C.
-
-**PARSING**: è un processo che analizza un flusso continuo di dati in ingresso. Un **parser** è un programma che esegue questo compito.
+#### Parsing:
+è un processo che analizza un flusso continuo di dati in ingresso. Un **parser** è un programma che esegue questo compito.
 `oprator>>(isttream& is, char* s)` preleva dallo istream `is` una sequenza di caratteri fino ad incontrare il carattere spazio, a questa sequenza viene aggiunto in coda il carattere nullo (*codice ASCII 0*) e viene quindi fatta puntare dal puntatore `s`. 
 -> Quando una operazione di input fallisce (fail=1) non viene effettuato alcun prelievo dallo stream e la variabile di `operator>>` non subisce modifiche.
 ###### Parsing di un oggetto nel piano reale rappresentato testualmente in forma cartesiana
