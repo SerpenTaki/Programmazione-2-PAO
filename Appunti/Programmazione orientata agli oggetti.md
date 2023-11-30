@@ -58,8 +58,6 @@ La seconda versione è migliore perchè? [[Namespace]]
 ![[Pasted image 20231004163548.png]]
 I metodi sono in comune per tutti gli oggetti, Una copia in memoria dei metodi per tutti gli oggetti. 
 ### la keyword this
-
-
 ``this`` identifica un puntatore speciale che contiene l'indirizzo dell'istanza della classe che ha invocato il metodo.
 
 Possiamo "esplicitare" il parametro implicito `this` nella dichiarazione del metodo `secondi()` e nella sua chiamata:

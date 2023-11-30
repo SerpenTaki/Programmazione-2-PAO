@@ -92,6 +92,14 @@ Spazio_DUE::Complex var2; g(var2);
 }
 //Possiamo usare ciò che ci serve
 
+//ESEMPIO 2
+#include <iostream>
+using std::cout;
+using std::endl;
+
+int main(){
+ cout << "Ciao!" << endl; //compila perfettamente
+}
 ````
 
 3. Soluzione **Direttiva d'uso**
@@ -117,5 +125,3 @@ int main(){
 // 'cout' undeclared
 // 'endl' undeclared
 ````
-
-
