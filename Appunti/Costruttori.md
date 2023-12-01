@@ -6,6 +6,14 @@ Sarà mezzanotte o no?
 
 Un **Costruttore** di una classe è un tipo speciale di funzione che viene chiamata per creare un oggetto. Prepara il nuovo oggetto per l'uso spesso ha degli argomenti che usa per costruire quell'oggetto.
 
+---
+*approfondimento e riassuntino per capire meglio*
+- Sono dei metodi con lo stesso nome della classe e senza tipo di ritorno che vengono invocati automaticamente quando viene dichiarato ( e quindi costruito) un oggetto.
+- I costruttori saranno accessibili e dichiarati nella parte **_pubblica_** della classe al fine di essere accessibili all'utente *mettergli in private è errore logico* 
+- Si possono definire più costruttori purchè differiscano nella lista di parametri (*ovvero nel numero e/o tipo dei parametri*)
+
+
+---
 **NB:** I costruttori sono dichiarati nella parte pubblica di una classe e hanno il nome della classe
 ````C++
 class orario{
@@ -103,6 +111,7 @@ cout << ptr1->Ore() << endl; //stampa 14
 [[classe orario]]
 
 ## Costruttore Standard
+*alloca e lascia indefinito (come`int x;`)*, non ha parametri ed esiste solo quando *io* **non** creo **nessun** altro costruttore. 
 
 ````C++
 class orario{
