@@ -57,10 +57,22 @@ La seconda versione è migliore perchè? [[Namespace]]
 ![[Pasted image 20231004163407.png]]
 ![[Pasted image 20231004163548.png]]
 I metodi sono in comune per tutti gli oggetti, Una copia in memoria dei metodi per tutti gli oggetti. 
+
+*Riassumendo:* Quando viene dichiarato un oggetto come `mezzanotte` di tipo `orario` viene riservata una zona di memoria per il valore del campo dati intero `sec`. Quindi ogni oggetto di tipo `orario` ha un proprio campo dati `sec`. *Mentre* in memoria vi è un **unica copia del codice _oggetto_**  dei metodi `Secondi(), Minuti(), Ore()` della classe `orario`.
+Ed è il codice che viene eseguito quando vengono effettuate le chiamate:
+````
+mezzanotte.Secondi();
+mezzanotte.Minuti();
+mezzanotte.Ore();
+````
+che possiamo interpretare come "*esegui i metodi `Secondi(),Minuti() e Ore()` sull'oggetto `mezzanotte` di tipo `orario`*". In una invocazione come `mezzanotte.Secondi()` diremo che `mezzanotte` è l'*oggetto di invocazione* del metodo `secondi()`
 ### la keyword this
 ``this`` identifica un puntatore speciale che contiene l'indirizzo dell'istanza della classe che ha invocato il metodo.
 
+*Ogni oggetto ha un proprio campo dati* quindi se un metodo viene invocato per esempio da `mezzanotte.Secondi()` esso dovrà usare il campo `sec` dell'oggetto `mezzanotte` mentre se viene invocato `mezzogiorno.Secondi()` esso deve usare il campo `sec` dell'oggetto `mezzogiorno`. Questo avviene tramite un parametro implicito (`*this`) della classe "*tipo puntatore ad oggetti della classe stessa*"
+
 Possiamo "esplicitare" il parametro implicito `this` nella dichiarazione del metodo `secondi()` e nella sua chiamata:
+
 
 ````C++
 //la definizione 
@@ -77,7 +89,7 @@ int s = Secondi(&mezzanotte);
 `this` è una keyword. Dereferenziazione `*this` nel corpo di un metodo. Ad esempio:
 ![[Pasted image 20231004164607.png]]
 
-A volte l'utilizzo esplicito del puntatore `this` diviene necessario nella definizione di qualche metodo.
+A volte l'utilizzo esplicito del puntatore `this` diviene necessario nella definizione di qualche metodo. *esempio più semplice: quando un metodo deve restituire l'oggetto stesso di invocazione*:
 ````C++
 class A {
 private:
