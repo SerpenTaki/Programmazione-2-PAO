@@ -66,6 +66,27 @@ int main(){
 	cout << "c = " << c << endl; //stampa 3
 }
 ````
+````C++
+// Esempio copiabile ed eseguibile
+#include<iostream>
+#include<string>
+
+using std::cout;
+using std::endl;
+using std::string;
+
+int main(){
+	string s = " ";
+	int a = 0, b = 1, c = 2;
+	a = (b++, c++);
+	cout << a << s << c << endl; // stampa 2 3
+	//quindi a è uguale a c prima dell'incremento
+	int d = 0, e = 1, f = 2;
+	d = (e++, ++f);
+	cout << d << s << f << endl; //stampa 3 3
+	//d è uguale ad f dopo l'incremento quindi l'operatore virgola ritorna solo il valore dell'ultima espressione
+}
+````
 
 ## Operatore di Assegnazione
 

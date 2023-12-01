@@ -1,3 +1,4 @@
+La possibilità di definire delle classi permette al programmatore di estendere il linguaggio con nuovi [[ADT]]. 
 # Modularizzazione delle classi
 
 ### Relazione has-a

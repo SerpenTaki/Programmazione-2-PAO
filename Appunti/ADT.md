@@ -1,15 +1,16 @@
 
 Un **Tipo di Dato Astratto** è un tipo di dato le cui istanze possono essere manipolate con modalità che dipendono esclusivamente dalla **_semantica_** del dato e non dalla sua **_implementazione_**.
 
+*Tipo di dato le cui istanze possono essere modellate in base alle sue istanze e non in base all'implementazione, inoltre permette di distinguere l'interfaccia dalla sua implementazione.*
+
 ## Concetto 
 **ADT = _valori + operazioni_**
 - **Interfaccia** dell'ADT: metodi pubblici o operazioni proprie
 - Rappresentazione interna dell'ADT **inaccessibile**
 - Esempio di ADT: tipo primitivo `int`
-- `struct` del C++ non rispetta il concetto di ADT
+- `struct` del C++ non rispetta il concetto di ADT *non essendoci nessun [[Information hiding]] posso operarci dentro e fare danni (che la funzione dedicata non farebbe)*
 
 # come mai struct NON è una ADT
-
 ````C++
 //Complessi.h
 
