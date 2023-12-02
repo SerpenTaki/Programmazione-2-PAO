@@ -14,7 +14,7 @@ private:
 
 //QUI IMPLEMENTIAMO I METODI DI UNA FUNZIONE
 int orario::Ore() {return sec / 3600;}
-int orario::Minuti() {return (sec/3600) % 60;}
+int orario::Minuti() {return (sec/60) % 60;}
 int orario::Secondi() {return sec % 60;}
 
 //file.cpp
