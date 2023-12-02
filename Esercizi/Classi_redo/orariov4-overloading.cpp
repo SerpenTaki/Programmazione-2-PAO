@@ -68,7 +68,7 @@ orario::orario(int o, int m, int s){
 }
 
 //Ridefinizione dell'operatore
-orario orario::operator+(orario o){
+orario operator+(orario o){
     orario aux;
     aux.sec = (sec + o.sec) % 86400;
     return aux;
