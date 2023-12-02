@@ -1,7 +1,6 @@
 Nella programmazione modulare c'è un problema *inquinamento dello spazio dei nomi*. Ovvero di variabili e nomi di funzioni. **I nomi sono _Estremamente Importanti_ quindi _vanno_ scelti bene**.
 
 ````C++
-
 //file Complex.h
 struct Complex {
 ...//implementazione1
@@ -23,7 +22,6 @@ void f(..){
 //vorrebbe usare entrambi i complex (sia cartesiano che polare)
 //È un altro tipo di problema di inquinamento dei nomi
 }
-
 ````
 
 Il meccanismo dei **Namespace** (*non disponibile in C)* permette di incaspulare dei nomi che altrimenti inquinerebbero il namespace globale
@@ -63,7 +61,6 @@ Dato che potrebbe risultare scomodo riutilizzare tante volte l'operatore di _sco
 1. Soluzione  **_Alias_ di namespace**
 
 ````C++
-
 #include "lib_uno.h"
 #include "lib_due.h"
 
