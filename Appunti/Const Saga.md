@@ -1,5 +1,18 @@
-# Metodi e oggetti di invocazione costanti
+Per evitare modifiche non volute sull'oggetto di invocazione da parte di un metodo si può dichiarare quel metodo *costante*. In altri termini, la marcatura `const` di qualche metodo `m()` dichiara esplicitamente che ogni invocazione di `obj.m()` non provocherà side effects su `obj`. Ad esempio:
+````C++
+class orario{
+public:
+	void stampaSecondi() const;
+	...
+};
 
+void orario::StampaSecondi() const {
+	cout << sec << endl; 
+} /* Se trova un side effects nel metodo, viene segnalato un errore. Ogni statemente non può provocare side-effect Anche x=x è considerato come side-effect*
+````
+
+Non fa side-effect sull'oggetto di invocazione => Il metodo **VA** marcato come *costante*.Se dimentico il const, è come se dicessi al compilatore che possono avvenire sideffect. Non posso chiamare all'interno di una `f const` una funzione non marcata come `const`.
+# Metodi e oggetti di invocazione costanti
 ````C++
 class orario{
 public:
@@ -35,6 +48,9 @@ t = LE_TRE.UnOraPiuTardi(); //ERRORE: Non compila!
 ````
 
 **ECCEZIONE(_ovvia_)**: i [[Costruttori]] sono dei metodi non dichiarati costanti che possono venire invocati su oggetti dichiarati costanti!
+
+### Regola importante!
+**Per i metodi costanti**: l'oggetto di invocazione di un metodo costante diventa costante. Più precisamente nel corpo di un metodo costante il puntatore `this` ha tipo `const C*` invece di `C*`
 
 # The const Matra
 

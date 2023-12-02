@@ -64,7 +64,7 @@ orario::orario(int o, int m, int s){
 //Esempi uso dei costruttori
 orario adesso_preciso(14,25,47);
 	//usa il costruttore ore-minuti-secondi
-orario adesso(14,25)
+orario adesso(14,25) //come scrivere int x(4) // fa la stessa cosa di int x = 4
 	//usa il costruttore ore-minuti
 orario mezzanotte;
 	//usa il costruttore senza parametri default
@@ -144,14 +144,14 @@ Altro esempio
 ````C++
 orario adesso(11,25); //costruttore ore-minuti
 orario copia; //costruttore di default
-copia = adesso; //assegnazione
-orario copia1 = adesso; //costruttore di copia analogo a int x 0 y;
+copia = adesso; //assegnazione non viene invocato il costruttore di copia nota che manca la definizione del tipo. Prima costruisco copia tramite costruttore di default e poi gli assegno il valore di adesso.
+
+orario copia1 = adesso; //costruttore di copia analogo a int x = y;
 
 orario copia2(adesso); //costruttore di copia analogo a int x(y);
 ````
 
-### Costruttori come convertitori di tipo
-
+### Costruttori come convertitori di tipo "cast impliciti"
 **Costruttore**: `C(T)`
 **Conversione implicita:** `T => C`
 ````C++
@@ -159,7 +159,6 @@ orario s; //invocazione del costruttore di default
 s = 8; //viene assegnato 8
 //MAI CONFONDERRE L'ASSEGNAZIONE CON IL COSTRUTTORE DI COPIA
 ````
-
 Con l'assegnazione `s = 8;` succede che:
 1. viene invocato il costruttore `orario(int)` con parametro attuale 8 che crea un **_oggetto anonimo temporaneo_** della classe `orario`
 2. l'oggetto temporaneo viene assegnato all'oggetto `s`
@@ -171,7 +170,6 @@ t = 8+12; //OK: equivale a t = orario(8+12)
 ````
 
 ### Argomenti di default nelle funzioni
-
 ````C++
 void F(double x, int n=3, string s); //ILLEGALE!!!
 //i valori alla destra del valore a cui è stato assegnato il default devono avere anche loro un valore di default
@@ -264,7 +262,7 @@ orario o = 8; //ERRORE: non viene richiamato implicitamente il costruttore
 ````
 la parola chiave explicit **blocca** la conversione a volte è utile.
 
-[[classe orario]] aggiungiamo 2 metodi pubblici con side effects
+[[classe orario#Aggiungiamo ad orario 2 metodi pubblici]] con side effects
 
 # Costruttore di Copia
 Il costruttore di copia **`C(const C&)`** viene **invocato automaticamente** nei seguenti 3 casi:

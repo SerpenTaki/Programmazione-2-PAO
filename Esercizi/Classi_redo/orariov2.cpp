@@ -16,7 +16,7 @@ private:
 };
 
 //definzione dei costruttori di orario
-orario::orario(){
+orario::orario(){ //costruttore di default.
     sec = 0;
 }
 //costruttore ore-minuti
@@ -65,4 +65,12 @@ int main(){
     cout << mezzanotte.Ore() << endl; // stampa 0
     cout << mezzanotte2.Secondi() << endl; // stampa 0
     cout << troppo.Ore() << ":" << troppo.Minuti() << endl; //stampa 0 : 0
+    cout << "Esempio 2:" << endl;
+
+    orario* ptr = new orario;
+    orario* ptr1 = new orario(15,24); //alloca un orario mediante un costruttore
+
+    cout << ptr->Ore() << endl; //stampa 0
+    cout << ptr1->Ore() << endl; // stampa 14
+    //si ricordi che ptr->Ore() è una abbreviazione di (*ptr).Ore()
 }
