@@ -18,7 +18,7 @@ public:
     //Ridefinizione degli operatori
     orario operator+(orario); 
     orario operator-(orario);
-    bool operator==(orario, orario);
+    friend bool operator==(const orario&,const orario&);
     bool operator<(orario);
     bool operator>(orario);
 
@@ -80,7 +80,7 @@ orario orario::operator-(orario o){
     return aux;
 }
 
-bool orario::operator==(orario x, orario y){
+bool orario::operator==(const orario& x,const orario& y){
     return (x.sec == y.sec);
 }
 
