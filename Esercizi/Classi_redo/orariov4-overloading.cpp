@@ -80,7 +80,7 @@ orario orario::operator-(orario o){
     return aux;
 }
 
-bool orario::operator==(const orario& x,const orario& y){
+bool operator==(const orario& x,const orario& y){
     return (x.sec == y.sec);
 }
 
