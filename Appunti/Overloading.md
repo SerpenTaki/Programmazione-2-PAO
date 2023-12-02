@@ -1,3 +1,4 @@
+Una ridefinizione dei vari operatori
 ````
 "Hello" + "World" = "Hello World"
 1 e 1/2 + 2 e 3/4 = 4 e 1/4

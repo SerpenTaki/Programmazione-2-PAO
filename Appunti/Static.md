@@ -1,5 +1,25 @@
-# Funzione Static
+I metodi della classe `orario` che abbiamo considerato finora sono stati pensati per operare su di uno specifico oggetto, l'oggetto di invocazione. Quindi scriviamo
+````C++
+orario adesso(14,33);
+cout << adesso.Minuti();
+````
+intendiamo stampare i minuti dello specifico oggetto `adesso`. Potremmo avere l'esigenza che la classe `orario` ci fornisca un valore `OraDiPranzo` di tipo `orario` che sia sempre lo stesso, una specie di costante della classe `orario`. Per ottenere ciò potremmo definire un metodo costante `OraDiPranzo()` che ritorna un oggetto della classe `orario`.
+````C++
+class orario{
+public:
+	orario OraDiPranzo() const;
+	...
+};
 
+orario orario::OraDiPranzo() const {return orario(13,15);}
+````
+Notiamo che in questo modo per stampare `OraDiPranzo` abbiamo bisogno di qualche oggetto di tipo Orario da usare come oggetto di invocazione anche se tale oggetto non verrà comunque usato dal metodo `OraDiPranzo()`.
+````C++
+const orario inutile;
+cout << "Si pranza alle " << inutile.OraDiPranzo().Ore() << " e " << inutile.OraDiPranzo().Minuti() << "minuti";
+````
+# Funzione Static
+La dichiarazione `static` permette di associare sia metodi che campi dati all'intera classe invece che a singoli oggetti della classe. **Dichiareremo `static` quando l'azione del metodo è indipendente dall'oggetto di invocazione**, *cioè quando l'oggetto d'invocazione non è necessario per la definizione del metodo*
 ````C++
 class orario {
 public:
@@ -12,8 +32,7 @@ orario orario::OraDiPranzo(){
 	return orario(13,15);
 };
 ````
-
-Esternamente alla classa si invoca il metodo statico premettendo al nome del metodo il nome della classe e l'operatore di scoping "`::`"
+Esternamente alla classe si invoca il metodo statico premettendo al nome del metodo il nome della classe e l'operatore di scoping "`::`". *Ho bisogno della classe che lo ospita, usando l'operatore di scoping*.
 ````C++
 cout << "Si pranza alle" << orario::OraDiPranzo().Ore() << " e " << orario::OraDiPranzo().Minuti() << " minuti\n";
 ````
@@ -21,6 +40,9 @@ cout << "Si pranza alle" << orario::OraDiPranzo().Ore() << " e " << orario::OraD
 **ATTENZIONE**: nei metodi statici non ha senso il **this** [[Programmazione orientata agli oggetti#la keyword this]]
 
 ## Campi dati statici (o di classe)
+- Nelle implementazioni degli altri metodi della classe i metodi dichiarati `static` si possono comunque invocare senza l'operatore di scoping `classe::`.
+- Anche un campo dati di una classe può essere dichiarato `static`. Quando viene costruito un oggetto di una classe non viene allocata memoria per i suoi campi dati statici.
+	- La memoria per i campi dati statici è unica per tutti gli oggetti ed è allocata una volta per tutte all'inizio
 
 L'inizializzazione dei campi dati statici si deve fare all'esterno della classe ed è **sempre** richiesta.
 
