@@ -18,7 +18,7 @@ public:
     //Ridefinizione degli operatori
     orario operator+(orario); 
     orario operator-(orario);
-    bool operator==(orario);
+    bool operator==(orario, orario);
     bool operator<(orario);
     bool operator>(orario);
 
@@ -80,16 +80,12 @@ orario orario::operator-(orario o){
     return aux;
 }
 
-bool orario::operator==(orario o){
-    orario aux;
-    if(aux.sec == o.sec)
-        return true;
-    else
-        return false;
+bool orario::operator==(orario x, orario y){
+    return (x.sec == y.sec);
 }
 
 bool orario::operator>(orario o){
-    
+
 }
 
 bool orario::operator<(orario o){
@@ -119,7 +115,7 @@ int main(){
     orario quattordici(14);
     cout << quattordici.Ore() << endl;
 
-    if(adesso == true)
+    if(adesso == quattordici)
         cout << "Vero" << endl;
     else
         cout << "Falso" << endl;
