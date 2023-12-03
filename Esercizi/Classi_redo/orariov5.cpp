@@ -3,9 +3,9 @@
 class orario{
 public:
     //"SELETTORI" in realtà sono metodi
-    int Ore(); //Selettore Ore
-    int Minuti(); //Selettore Minuti
-    int Secondi(); //Selettore Secondi
+    int Ore() const; //Selettore Ore
+    int Minuti() const; //Selettore Minuti
+    int Secondi() const; //Selettore Secondi
     //costruttori
     orario(); //costruttore di default
     orario(int); //costruttore ore
@@ -29,7 +29,7 @@ private:
 };
 
 //Definizione Metodi
-int orario::Ore() {return sec / 3600;}
+int orario::Ore() const {return sec / 3600;}
 int orario::Minuti() {return (sec/60) % 60;}
 int orario::Secondi() {return sec % 60;}
 
@@ -100,6 +100,11 @@ bool orario::operator==(orario x) const {
     int sec_X = x.Ore() * 3600 + x.Minuti() * 60 + x.Secondi();    
     return (sec_X == sec);
 }
+
+//OVERLOADING di operatori con funzioni esterne
+std::ostream& operator<<(std::ostream& os,const orario& o){
+    return os << o.Ore() << ':' << o.orario::Minuti() << ':' << o.orario::Secondi();
+}
 //file.cpps
 
 using std::cout;
@@ -107,46 +112,14 @@ using std::endl;
 
 
 int main(){
-    orario mezzanotte;
-    cout << mezzanotte.Ore() << endl;
-    orario adesso(15, 24);
-    cout << adesso.Ore() << endl;
-    mezzanotte.AvanzaUnOra();
-    cout << mezzanotte.Ore() << endl;
-    //proviamo a fare 15 + 1
-    adesso = adesso + mezzanotte;
-    cout << adesso.Ore() << endl;
-    mezzanotte.AvanzaUnOra(); //ora mezzanotte.Ore() stamperà 2 
-    //proviamo a fare 16 -2
-    adesso = adesso - mezzanotte;
-    cout << adesso.Ore() << endl;
-    orario quattordici(14);
-    cout << quattordici.Ore() << endl;
-    if(adesso == quattordici)
-        cout << "Vero" << endl;
-    else
-        cout << "Falso" << endl;
+    orario LE_TRE(15,0);
+    orario LE_DODICI(12,0);
     
-    if(adesso < mezzanotte)
-        cout << "Vero" << endl;
-    else
-        cout << "Falso" << endl;
-
-    if(adesso > mezzanotte)
-        cout << "Vero" << endl;
-    else
-        cout << "Falso" << endl;
+    cout << "Adesso sono le " << LE_TRE << endl;
+    cout << "Fra dodici ore saranno le " << LE_TRE + LE_DODICI << endl;
 
 }
-
-/* Stampa
-0
-15
-1
-16
-14
-14
-Falso
-Falso
-Vero
+/*STAMPA:
+Adesso sono le 15:0:0
+Fra dodici ore saranno le 3:0:0
 */

@@ -304,13 +304,13 @@ int main(){
 	fun(c); // 2 invocazione del costr. di copia
 
 	C y = fun(c);
-	//g++ => 2 sole invocazioni del costr. di copia e non 3!
+	//g++ => 3 sole invocazioni del costr. di copia e non 2!
 
 	C z; z = fun(c);
 	//2 invocazioni del costr. di copia
 
 	fun(fun(c));
-	//g++ => 3 sole invocazioni del costr. di copia e non 4!
+	//g++ => 4 sole invocazioni del costr. di copia e non 3!
 }
 ````
 
