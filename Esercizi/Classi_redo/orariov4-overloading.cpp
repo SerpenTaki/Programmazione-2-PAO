@@ -16,11 +16,12 @@ public:
      // x rimane invariato restituisce un'espressione = x+1 ora
     void AvanzaUnOra(); // modifica lo stato dell'oggetto di invocazione
     //Ridefinizione degli operatori
-    orario operator+(orario); 
-    orario operator-(orario);
-    friend bool operator==(const orario&,const orario&);
-    bool operator<(orario);
-    bool operator>(orario);
+    orario operator+(const orario&); 
+    orario operator-(const orario&);
+    //friend bool operator==(const orario&,const orario&);
+    bool operator==(orario)const;
+    bool operator<(orario) const;
+    bool operator>(orario) const;
 
 private:
     int sec; //unico campo dati della classe, scegliamo di rappresentare l'orario
@@ -68,31 +69,38 @@ orario::orario(int o, int m, int s){
 }
 
 //Ridefinizione dell'operatore
-orario orario::operator+(orario o){
+orario orario::operator+(const orario& o){
     orario aux;
     aux.sec = (sec + o.sec) % 86400;
     return aux;
 }
 
-orario orario::operator-(orario o){
+orario orario::operator-(const orario& o){
     orario aux;
     aux.sec = (sec - o.sec) % 86400;
     return aux;
 }
-
+/*
 bool operator==(const orario& x,const orario& y){
     return (x.sec == y.sec);
 }
-
-bool orario::operator>(orario o){
-
-}
-
-bool orario::operator<(orario o){
+*/
+bool orario::operator>(orario o) const {
+    int sec_O = o.Ore() * 3600 + o.Minuti() * 60 + o.Secondi();    
+    return (sec > sec_O) ? true : false;
 
 }
 
-//file.cpp
+bool orario::operator<(orario o) const {
+    int sec_O = o.Ore() * 3600 + o.Minuti() * 60 + o.Secondi();    
+    return (sec < sec_O); //perchè ha già come oggetto di ritorno il tipo bool
+}
+
+bool orario::operator==(orario x) const {
+    int sec_X = x.Ore() * 3600 + x.Minuti() * 60 + x.Secondi();    
+    return (sec_X == sec);
+}
+//file.cpps
 
 using std::cout;
 using std::endl;
@@ -101,7 +109,7 @@ using std::endl;
 int main(){
     orario mezzanotte;
     cout << mezzanotte.Ore() << endl;
-    orario adesso(15);
+    orario adesso(15, 24);
     cout << adesso.Ore() << endl;
     mezzanotte.AvanzaUnOra();
     cout << mezzanotte.Ore() << endl;
@@ -114,8 +122,17 @@ int main(){
     cout << adesso.Ore() << endl;
     orario quattordici(14);
     cout << quattordici.Ore() << endl;
-
     if(adesso == quattordici)
+        cout << "Vero" << endl;
+    else
+        cout << "Falso" << endl;
+    
+    if(adesso < mezzanotte)
+        cout << "Vero" << endl;
+    else
+        cout << "Falso" << endl;
+
+    if(adesso > mezzanotte)
         cout << "Vero" << endl;
     else
         cout << "Falso" << endl;
