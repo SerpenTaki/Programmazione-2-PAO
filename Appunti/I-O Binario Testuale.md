@@ -232,3 +232,39 @@ public:
 ````
 Le modalità di apertura di uno stream su file possono essere combinate tramite l'`OR` bitwise `|`.
 Per default, gli oggetti di ifstream sono aperti in lettura mentre quelli di ostream sono aperti in scrittura. Un fstream può essere aperto sia in lettura che in scrittura.
+
+### Stream di stringhe
+Si possono definire *stream associati a stringhe*, ossia sequenze di caratteri memorizzate in RAM. Il carattere nullo di terminazione gioca il ruolo di marcatore di fine stream.
+
+Le classi da utilizzare sono `istringstream, ostringstream e stringstream` il file header che le dichiara è `<sstream>`. I costruttori sono i seguenti.
+````C++
+istringstream(const char* initial, int = ios::in);
+ostringstream(int = ios::out);
+ostringstream(const char* initial, int = ios::out);
+stringstream(int = ios::in|ios::out);
+stringstream(const char* initial, int = ios::in|ios::out);
+````
+I metodi di scrittura/lettura sono quelli ereditati da istream, ostream e iostream. Il metodo `str()` applicato ad uno stream di stringhe ritorna la stringa associata allo stream. Ad esempio:
+````C++
+#include<iostream>
+#include<sstream>
+using namespace std;
+
+int main(){
+	stringstream ss;
+	ss << 236 << ' ' << 3.14 << " pippo "; //output su stringstream
+	cout << ss.tellp() << ' ' << ss.tellg() << endl;
+	/*
+	Posizioni di testina di output e input: 17 0
+	la stringa in memoria è: "236 3.14 pippo "
+	la testina di output è avanzata alle fine ios::end
+	la testina di input è ancora a ios::beg
+	*/
+	int i; ss >> i; //input da stringstream
+	cout << i << endl; //stampa 236
+	double d; ss >> d; cout << d << endl; //stampa 3.14
+	string s; ss >> s; cout << "*\n"; //stampa *pippo*
+}
+````
+A cosa può servire?
+Ad implementare I/O mediante `operator>>` ed `operator<<` su stringhe, ad esempio fornite dall'interazione con una GUI.
