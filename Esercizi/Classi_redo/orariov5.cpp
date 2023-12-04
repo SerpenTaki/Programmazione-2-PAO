@@ -30,8 +30,8 @@ private:
 
 //Definizione Metodi
 int orario::Ore() const {return sec / 3600;}
-int orario::Minuti() {return (sec/60) % 60;}
-int orario::Secondi() {return sec % 60;}
+int orario::Minuti() const {return (sec/60) % 60;}
+int orario::Secondi() const {return sec % 60;}
 
 orario orario::UnOraPiuTardi(){
     orario aux; //variabile ausiliaria
@@ -103,7 +103,7 @@ bool orario::operator==(orario x) const {
 
 //OVERLOADING di operatori con funzioni esterne
 std::ostream& operator<<(std::ostream& os,const orario& o){
-    return os << o.Ore() << ':' << o.orario::Minuti() << ':' << o.orario::Secondi();
+    return os << o.Ore() << ':' << o.Minuti() << ':' << o.orario::Secondi();
 }
 //file.cpps
 
