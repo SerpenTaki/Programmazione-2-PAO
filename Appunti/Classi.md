@@ -11,6 +11,7 @@ Per creare una classe si parte dalla sua forma più semplice per poi introdurre 
 NB: **Dichiarazione e Definizione devono essere memorizzate in file diversi**.
 [[Programmazione orientata agli oggetti#la keyword this]]
 # Modularizzazione delle classi
+La definizione di classi permette di aggiungere nuovi tipi di dato disponibili al programmatore. Naturalmente, le classi, una volta definite possono essere usate per definire *modularmente* altre classi più complesse.
 
 ### Relazione has-a
 
