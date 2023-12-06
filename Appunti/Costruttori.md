@@ -384,7 +384,7 @@ telefonata::telefonata(orario i, orario f, int n) //costruttore di copia standar
 **ATTENZIONE SPRECO DI MEMORIA** da rigettare usiamo la terza ver
 ![[Pasted image 20231030190150.png]]
 
-###### Ridefinizione costruttore di copia
+### Ridefinizione costruttore di copia
 [[Container#Copia superficiale]]
 [[Container#Copie profonde]]
 

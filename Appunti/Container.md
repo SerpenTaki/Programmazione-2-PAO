@@ -26,18 +26,20 @@ Inoltre capire quando c'è un fenomeno di *aliasing* non è decidibile ma indeci
 ![[Pasted image 20231031171320.png]]
 [[Telefonata e Bolletta#Ridefinizione dell'assegnazione in bolletta]]
 
-###### Copia superficiale
+### Copia superficiale
 L'assegnazione standard esegue una *shallow copy*. Idem il costruttore di copia standard
 
 Un metodo per copiare un oggetto è la copia superficiale. Nel processo di copia superficiale di A, B copierà tutti i valori dei campi di A. Se il valore del campo è un indirizzo di memoria, viene copiato l'indirizzo di memoria e se il valore del campo è un tipo primitivo, viene copiato il valore del tipo primitivo.
 
 Lo svantaggio è che se si modifica l'indirizzo di memoria a cui punta uno dei campi di B, si modifica anche il campo a cui punta A.
 
-###### Copie profonde
+### Copie profonde
 *per il costruttore di copia e l'assegnazione*
 **_Deep copy_**.
 Un'alternativa è la copia profonda. In questo caso i dati vengono effettivamente copiati. Il risultato è diverso da quello di una copia superficiale. Il vantaggio è che A e B non dipendono l'uno dall'altro **ma al costo di una copia più lenta e costosa**.
 
 [[Costruttori#Ridefinizione costruttore di copia]]
+
+
 
 
