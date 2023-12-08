@@ -1,4 +1,6 @@
+
 #include "bolletta.h"
+#include "telefonata.h"
 
 //otare il costruttore di default per il campo dati info
 bolletta::nodo::nodo() : next(0) {}
@@ -24,6 +26,14 @@ void bolletta::Togli_Telefonata(telefonata t){
             prec->next = p->next;
         delete p; //ricordarsi di deallocare
     }
+}
+
+bolletta& bolletta::operator=(const bolletta& b){
+    if(this != &b) { //operator != tra puntatori
+        distruggi(first);
+        first = copia(b.first);
+    }
+    return *this;
 }
 
 telefonata bolletta::Estrai_Una() {
