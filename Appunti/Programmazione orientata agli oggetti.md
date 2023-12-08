@@ -157,7 +157,10 @@ In alcuni casi, il tempo di vita di un oggetto coincide con il tempo di vita di 
 3. [[Static#Static variable]]
 
 ### Oggetti come parametri di funzione
-Ogni volta che una funzione `F()` viene invocata, i suoi parametri formali vengono allocati in memoria
+Ogni volta che una funzione `F()` viene invocata, i suoi parametri formali vengono allocati in memoria e inizializzati con i corrispondenti parametri attuali.
+**2 meccanismi per il passaggio di parametri**:
+1. **Passaggio per valore**: In questo caso i parametri vengono inizializzati tramite delle *copie* degli r-valori dei parametri attuali. Questo passaggio potrebbe essere costoso sia in termini di tempo e spazio in memoria. Inoltre i valori manipolati dalla funzione sono copie dei parametri attuali locali alla funzione, quindi tutte le modifiche fatte sui parametri formali non si riflettono sui parametri formali non si riflettono sui parametri attuali
+2. Si consideri il prototipo di funzione `T1 fun(T& x)`. Il parametro `x`è un riferimento ad una variabile di tipo `T`e quindi il parametro attuale in una chiamata di funzione `fun(a)`deve essere un'espressione indirizzabile di tipo `T`, cioè `a`deve avere un l-valore. Ciò che succede nell'invocazione `fun(a)`è che il parametro formale `x`diventa un alias del parametro attuale `a`
 ### Tempo di vita delle variabili
 1. Variabili di classe automatica (**_Call stack_ la loro vita è decisa e regolata da loro durante le chiamate di funzione**)
 2. Variabili di classe statica (**_Memoria statica_**)
