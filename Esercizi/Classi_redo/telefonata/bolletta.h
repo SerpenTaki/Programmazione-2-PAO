@@ -9,6 +9,7 @@ public:
     void Aggiungi_Telefonata(telefonata);
     void Togli_Telefonata(telefonata);
     telefonata Estrai_Una();
+    bolletta& operator=(const bolletta&);
 private:
     class nodo {
     public:
@@ -18,5 +19,7 @@ private:
         nodo* next;
     };
     nodo* first;
+    static nodo* copia(nodo*); //nodo che devo duplicare
+    static nodo* distruggi(nodo*); //nodo che devo eliminare
 };
 #endif

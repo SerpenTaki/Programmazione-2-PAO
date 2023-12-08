@@ -1,5 +1,5 @@
-#ifdef ORARIO_H
 #define ORARIO_H
+#ifdef ORARIO_H
 #include <iostream>
 class orario{
 public:

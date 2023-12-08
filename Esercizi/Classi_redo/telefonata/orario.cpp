@@ -1,4 +1,5 @@
-
+#include "orario.h"
+#include "telefonata.h"
 //Definizione Metodi
 int orario::Ore() const {return sec / 3600;}
 int orario::Minuti() const {return (sec/60) % 60;}

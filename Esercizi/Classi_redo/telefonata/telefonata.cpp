@@ -1,5 +1,6 @@
 //file telefonata.cpp
 #include "telefonata.h"
+#include "orario.h"
 
 telefonata::telefonata(orario i, orario f, int n)
                         : inizio(i), fine(f), numero(n) {}

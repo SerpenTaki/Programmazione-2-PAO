@@ -34,3 +34,51 @@ telefonata bolletta::Estrai_Una() {
     delete p;
     return aux;
 }
+
+bolletta::nodo* bolletta::copia(nodo* p){
+    if(!p) return 0;
+    nodo* primo = new nodo;
+    //Invocazione del costruttore di default di nodo
+    primo->info = p->info; //primo punta al primo nodo della copia della lista
+    nodo* q = primo; //q punta all'ultimo nodo della lista finora copiata
+    while (p->next){
+        q->next = new nodo;
+        p = p->next;
+        q = q->next;
+        q->info = p->info;
+    }
+    q->next = 0;
+    return primo;
+}
+
+bolletta::nodo* bolletta::distruggi(nodo* p){
+
+    //scorro tutta la lista deallocando ogni nodo
+    nodo* q;
+    while(p){
+        q = p;
+        p = p->next;
+        delete q;
+    }
+}
+
+
+//VERSIONI RICORSIVE DI COPIA E DISTRUGGI
+/*
+bolletta::nodo* bolletta::copia(nodo* p){
+    if(!p) return 0;//caso base lista vuota
+    else //Per induzione copia(p->next) è la copia della coda di p e quindi inserisco il primo nodo di p in testa alla lista copia(p->next)
+    return new nodo(p->info, copia(p->next));
+}
+
+void bolletta::distruggi(nodo* p){
+    //Caso Base: lista vuota, nulla da fare
+    if (p){
+        //passo induttivo:
+        //per induzione distruggi(p->next) dealloca la coda di p e quindi
+        //quindi rimane da deallocare solamente il primo nodo di p
+        distruggi(p->next);
+        delete p;
+    }
+}
+*/

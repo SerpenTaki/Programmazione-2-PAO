@@ -156,6 +156,8 @@ In alcuni casi, il tempo di vita di un oggetto coincide con il tempo di vita di 
 2. Locali 
 3. [[Static#Static variable]]
 
+### Oggetti come parametri di funzione
+Ogni volta che una funzione `F()` viene invocata, i suoi parametri formali vengono allocati in memoria
 ### Tempo di vita delle variabili
 1. Variabili di classe automatica (**_Call stack_ la loro vita è decisa e regolata da loro durante le chiamate di funzione**)
 2. Variabili di classe statica (**_Memoria statica_**)
