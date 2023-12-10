@@ -160,14 +160,15 @@ In alcuni casi, il tempo di vita di un oggetto coincide con il tempo di vita di 
 Ogni volta che una funzione `F()` viene invocata, i suoi parametri formali vengono allocati in memoria e inizializzati con i corrispondenti parametri attuali.
 **2 meccanismi per il passaggio di parametri**:
 1. **Passaggio per valore**: In questo caso i parametri vengono inizializzati tramite delle *copie* degli r-valori dei parametri attuali. Questo passaggio potrebbe essere costoso sia in termini di tempo e spazio in memoria. Inoltre i valori manipolati dalla funzione sono copie dei parametri attuali locali alla funzione, quindi tutte le modifiche fatte sui parametri formali non si riflettono sui parametri formali non si riflettono sui parametri attuali
-2. Si consideri il prototipo di funzione `T1 fun(T& x)`. Il parametro `x`è un riferimento ad una variabile di tipo `T`e quindi il parametro attuale in una chiamata di funzione `fun(a)`deve essere un'espressione indirizzabile di tipo `T`, cioè `a`deve avere un l-valore. Ciò che succede nell'invocazione `fun(a)`è che il parametro formale `x`diventa un alias del parametro attuale `a`
+2. **Passaggio per riferimento**: Si consideri il prototipo di funzione `T1 fun(T& x)`. Il parametro `x`è un riferimento ad una variabile di tipo `T`e quindi il parametro attuale in una chiamata di funzione `fun(a)`deve essere un'espressione indirizzabile di tipo `T`, cioè `a`deve avere un l-valore. Ciò che succede nell'invocazione `fun(a)`è che il parametro formale `x`diventa un alias del parametro attuale `a`, senza bisogno di creare alcuna copia locale alla funzione. Questo meccanismo permette di modificare i valori delle variabili passate per riferimento.
 ### Tempo di vita delle variabili
-1. Variabili di classe automatica (**_Call stack_ la loro vita è decisa e regolata da loro durante le chiamate di funzione**)
-2. Variabili di classe statica (**_Memoria statica_**)
+è l'intervallo di tempo in cui la variabile viene mantenuta in memoria durante l'esecuzione del programma.
+1. Variabili di classe automatica (**_Call stack_ la loro vita è decisa e regolata da loro durante le chiamate di funzione**) *vengono allocate nello stack quando l'esecuzione raggiunge la loro definizione e vengono deallocate quando termina l'esecuzione del blocco in cui sono definite*
+2. Variabili di classe statica (**_Memoria statica_**) *vengono deallocate al termine dell'esecuzione del programma*
 	- campi dati statici (PAO)
 	- Variabili globali (P1, ma deprecate praticamente)
 	- variabili statiche in corpo di funzione (*cattiva pratica*)
-3. Variabili dinamiche (**_Heap_** "_mucchio_" _muore con la delete_)
+3. Variabili dinamiche (**_Heap_** "_mucchio_" _muore con la delete_) *vengono allocate tramite keyword `new`vengono deallocate tramite `delete`*
 
 [[Distruttori]]
 

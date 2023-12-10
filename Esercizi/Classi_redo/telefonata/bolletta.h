@@ -1,6 +1,7 @@
 #ifndef BOLLETTA_H
 #define BOLLETTA_H
 #include "telefonata.h"
+#include "orario.h"
 
 class bolletta {
 public:
@@ -10,6 +11,7 @@ public:
     void Togli_Telefonata(telefonata);
     telefonata Estrai_Una();
     bolletta& operator=(const bolletta&);
+    orario Somma_Durate(bolletta b);
 private:
     class nodo {
     public:
