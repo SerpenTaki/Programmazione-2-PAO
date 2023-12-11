@@ -73,10 +73,7 @@ bolletta::nodo::˜nodo()
 ````
 In questo modo il distruttore `bolletta` diventa:
 `bolletta::˜bolletta() { if(first) delete first; }`
-
-
 # La regola del 3 (C++)
-
 La **regola del tre** è una regola empirica del C++ (prima del C++11) che sostiene che se una classe definisce uno qualsiasi dei seguenti elementi, probabilmente dovrebbe definirli esplicitamente tutti e tre:
 - distruttore
 - costruttore di copia
@@ -88,12 +85,10 @@ arrayDinamico[0] = 3;
 *(arrayDinamico+1) = 2;
 delete[] arrayDinamico;
 ````
-
 **ARRAY DI OGGETTI**
 - Array statici e dinamici
 - Costruzione di array
 - Distruzione di array
-
 ````C++
 class C{
 public:
