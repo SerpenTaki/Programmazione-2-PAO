@@ -35,6 +35,12 @@ public:
 }
 
 contenitore::iteratore contenitore::begin() const{
+    iteratore aux;
+    aux.punt = first; //per amicizia
+    return aux;
+}
 
+contenitore::iteratore contenitore::end() const {
+    
 }
 #endif
