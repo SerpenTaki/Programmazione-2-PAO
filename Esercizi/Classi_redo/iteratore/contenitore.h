@@ -41,6 +41,12 @@ contenitore::iteratore contenitore::begin() const{
 }
 
 contenitore::iteratore contenitore::end() const {
-    
+    iteratore aux;
+    aux.punt = 0; //per amicizia
+    return aux;
+}
+
+int& contenitore::operator[] (contenitore::iteratore it) const{
+    return it.punt->info; //per amicizia
 }
 #endif
