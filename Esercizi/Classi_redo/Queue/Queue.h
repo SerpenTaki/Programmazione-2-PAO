@@ -4,7 +4,7 @@
 template <class T>
 class Queue {
 public:
-    Queue() : primo(0), ultimo(0) {} //notare la sintassi è Queue non Queue<T>
+    Queue();//notare la sintassi è Queue non Queue<T>
     bool is_empty() const;  //testa se la coda è vuota
     void add(const T&);     //aggiunge un item alla coda 
     T remove();          //rimuove un item alla coda
@@ -15,9 +15,9 @@ private:
     QueueItem<T>* ultimo; 
 };
 
-/*definizione esterna
+definizione esterna
 template <class T>
-Queue<T>::Queue() : primo(0) , ultimo(0) {}*/
+Queue<T>::Queue() : primo(0) , ultimo(0) {}
 
 //SEMPRE NEL QUEUE.h
 template <class T>

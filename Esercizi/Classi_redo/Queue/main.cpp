@@ -2,7 +2,7 @@
 using std::cout; 
 using std::endl;
 #include "Queue_item.h"
-#include "queue.h"
+#include "Queue.h"
 
 int main() {
     Queue<int>* pi = new Queue<int>;
