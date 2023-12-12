@@ -1,4 +1,6 @@
-Funzione che ritorna il minimo tra 2 variabili di un tipo che ammette il test booleano operator< 
+Il C++ è un linguaggio **_strongly typed_**: il programmatore è tenuto a specificare il tipo di ogni elemento sintattico che durante l'esecuzione denota un valore, ed il linguaggio garantisce che tale valore sia utilizzato in modo coerente con il tipo specificato (*e.s.* non è possibile eseguire una moltiplicazione tra un intero ed un puntatore).
+Vi sono situazione rilevanti che non possono essere risolte mediante conversioni di tipo:
+*Ad esempio se volessimo definire una funzione che calcoli il minimo tra 2 valori dobbiamo necessariamente definire una funzione diversa per ogni tipo di valori*: `int, float, orario, string`etc...
 ````C++
 int min(int a, int b){
 	return a < b ? a : b;
@@ -19,7 +21,6 @@ string min(string a, string b){
 	return a < b ? a : b;
 }
 ````
-
 Una soluzione attraente ma subdolamente pericolosa potrebbe essere la definizione di **macro** per il preprocessore
 `#define min(a,b) ((a) < (b) ? (a) : (b))`
 il preprocessore sostituisce:
@@ -38,10 +39,15 @@ cout << min(++i, --j);
 // NON stampa 4
 ````
 
+La soluzione a questo problema consiste nell'usare un *template di funzione*, che assieme ai *template di classe* implementano in C++ l'idea del cosiddetto *polimorfismo parametrico*.
+
 ### Generic programming
 La **programmazione generica** è uno stile di *programmazione informatica* in cui gli algoritmi sono scritti in termini di tipi *da specificare in seguito* che vengono poi *instanziati* quando necessario per tipi specifici forniti come *parametri*. 
 
 # Template
+
+_Un template di funzione è la descrizione di un metodo che il compilatore può usare per generare automaticamente istanze particolari di una funzione che differiscono per il tipo degli argomenti. Un template di funzione può essere sia una funzione globale che un metodo di classe_
+
 I template sono una caratteristica del linguaggio di programmazione **C++** che consente alle funzioni e alle classi di operare con tipi *generici*. Ciò consente a una funzione o a una classe di lavorare su molti tipi di dati diversi senza essere riscritta per ciascuno di essi.
 
 I template sono di grande utilità per i programmatori in C++, soprattutto se combinati con l'ereditarietà multipla e l'overloading degli operatori. La *Libreria standard del C++* fornisce molte funzioni utili all'interno di un quadro di modelli collegati.
@@ -49,7 +55,8 @@ I template sono di grande utilità per i programmatori in C++, soprattutto se co
 Le principali ispirazioni per i template del C++ sono stati i moduli parametrizzati forniti da CLU e i generici forniti da Ada.
 ````C++
 template <class T> //oppure: template <typename T>
-T min(T a, T b){
+// T è un parametro di tipo deve supportare l'operatore < per il tipo T (devo ridefinire <)
+T min(Tipo a, T b){
 	return a < b ? a : b;
 }
 ````
@@ -60,7 +67,7 @@ int main(){
 	orario r,s,t;
 	...
 	//istanziazione implicita del template
-	k= min(i,j);
+	k = min(i,j);
 	t = min(r,s);
 	//oppure: istanziazione esplicita del template
 	k = min<int>(i,j);
@@ -68,8 +75,8 @@ int main(){
 }
 ````
 - I parametri di un template possono essere:
-	- **Parametri di tipo**: si possono istanziare con un tipo qualsiasi
-	- **Parametri valore _di qualche tipo_**: si possono istanziare con un valore costante del tipo indicato
+	- **Parametri di tipo**: preceduti da `class`o `typename`e che devono essere istanziati con un tipo qualsiasi
+	- **Parametri valore _di qualche tipo_**: si possono istanziare con un valore costante del tipo indicato (*noto a compile-time*)
 		- Un template *non è codice compatibile*: istanziazione **implicita** o **esplicita** di template di funzione
 		- **Processo di deduzione degli argomenti** di un template nella istanziazione implicita (dove il *tipo di ritorno non si considera mai*)
 **ATTENZIONE:** nell'istanziazione implicita il **tipo di ritorno** dell'istanza del template non viene *mai considerato nella deduzione degli argomenti* (essendo opzionale l'uso del valore ritornato)
@@ -79,7 +86,7 @@ int main(){
 	...
 	d = min(i,j); //istanzia int min(int, int)
 					//e quindi usa la conversione
-					//int => double
+					//int => double "Promozione"
 }
 ````
 **L'algoritmo di deduzione degli argomenti di un template** procede esaminando tutti i parametri attuali passati al template di funzione da sinistra verso destra. Se si trova uno stesso parametro **T** del template che appare più volte come parametro di tipo, l'argomento del template dedotto per **T** da ogni parametro attuale deve essere **esattamente** lo stesso.
@@ -159,17 +166,21 @@ int main(){
 ````
 
 ## Modello di compilazione del template
-
+La definizione di un template di funzione è solamente uno schema per la definizione di un numero potenzialmente infinito di funzioni. *Una definizione di template non può essere compilata in qualche forma di codice macchina che possa essere effettivamente definito.*
 1) La definizione del template deve essere visibile all'utilizzatore del template?
 2) Il file header del template cosa deve includere?
 	- Solo la dichiarazione del template?
 	- Sia la dichiarazione che la definizione?
 3) Cosa si compila effettivamente?
-
 ### Compilazione per inclusione
-Definizione del template in un "header file" che deve essere sempre incluso dal codice che necessita di istanziare il template. Non vi è quindi il concetto di compilazione separata di un template
+*lo includo senza doverlo compilare*
+Definizione del template in un "header file" che deve essere sempre incluso dal codice che necessita di istanziare il template.
+Il compilatore usa quindi queste definizioni per generare il codice di tutte le istanze del template utilizzate nel file che sta compilando.
+Non vi è quindi il concetto di compilazione separata di un template
 **Problema 1**: No information hiding -> nessuna soluzione (*pazienza*)
+- il file header contiene tutti i dettagli della definizione dei template. Tali dettagli risultano quindi visibili all'utente e ciò va quindi contro il principio di *information hiding*
 **Problema 2:** Istanze multiple del template -> *Dichiarazioni esplicite di istanziazione*
+- Se la stessa istanza di un template viene usata in più file compilati separatamente il codice per tale istanza viene generato più volte dal compilatore. *rallenta la compilazione*.
 ###### Dichiarazione esplicita
 di istanziazione del template di funzione:
 ````C++
@@ -183,12 +194,32 @@ al tipo `int` ha la forma: `template int min(int,int);`
 Forza il compilatore a generare il codice dell'istanza del template relativa al tipo `int`
 
 ### Compilazione per separazione
+*Compila parzialmente il codice tipizzato attendendo per le parti non ancora conosciute* **DEPRECATO**
 Dichiarazione del template separata dalla sua definizione. Parola chiave **export** non supportata dai compilatori. Compilatori Comeau ed icc (*Intel C++ compiler*) tra i pochissimi che supportavano **export**.
 Il comitato C++11 ha deciso di rimuovere **export** dallo standard . Rimane una keyword riservata.
 
-
-
+-> Nei file header vengono messe solo le dichiarazioni dei template mentre le definizioni vengono messe in un file "*compilato separatamente*".
+````C++
+//file "min.h"
+template <class T>
+T min(T a, T b);
+//file "min.cpp"
+export template <class T>
+T min(T a, T b) { return a < b ? a : b; }
+//file "main.cpp"
+#include "min.h"
+int main() {
+	int i, j, k; orario r, s, t;
+	...
+	k = min(i,j);
+	..
+	t = min(r,s);
+	...
+}
+````
 # Template di classe
+È essenzialmente la descrizione di un metodo (modello) che il compilatore può usare per generare automaticamente istanze particolare di una classe che differiscono per il tipo di alcuni membri, cioè campi dati, metodi o classi interne, propri della classe.
+
 Se si vogliono usare sia code di interi che code di stringhe, si devono scrivere 2 definizioni distinte della classe e con 2 nomi diversi.
 ````C++
 class QueueInt{
