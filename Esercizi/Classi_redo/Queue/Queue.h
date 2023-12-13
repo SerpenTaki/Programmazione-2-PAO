@@ -1,5 +1,6 @@
-#ifdef QUEUE_H
+#ifndef QUEUE_H
 #define QUEUE_H
+#include"Queue_item.h"
 
 template <class T>
 class Queue {
@@ -15,9 +16,9 @@ private:
     QueueItem<T>* ultimo; 
 };
 
-definizione esterna
+//definizione esterna
 template <class T>
-Queue<T>::Queue() : primo(0) , ultimo(0) {}
+Queue<T>::Queue() : primo(nullptr) , ultimo(nullptr) {}
 
 //SEMPRE NEL QUEUE.h
 template <class T>

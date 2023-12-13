@@ -1,4 +1,4 @@
-#ifdef QUEUEITEM_H
+#ifndef QUEUEITEM_H
 #define QUEUEITEM_H
 
 template <class T>
