@@ -1,0 +1,1 @@
+Gli *alberi binari di ricerca* sono delle strutture dati dinamiche che analogamente alle liste permettono di aggiungere e togliere un elemento da una collezione. Rispetto alle liste permettono la ricerca efficiente di un elemento e di trovare facilmente il minimo e il massimo.
