@@ -234,6 +234,24 @@ template <class T1, ...., class Tn> class C {
 	friend void fun<...,Tj,....>(...);
 };
 ````
+````C++
+template<class T> class A {... int fun(); ...};
+template<class T> class B { ... };
+
+//dichiarazione incompleta del template di classe C
+template<class T1, class T2> class C;
+
+//dichiarazione del template di funzione test
+// associato a C
+template<class T1, class T2> bool test(C<T1,T2>);
+
+template<class T1, class T2> class C{
+	friend int A<T1>::fun();
+	friend class B<T2>;
+	friend bool test<T1,T2>(C);
+};
+````
+Ad ogni istanza del template di classe C rimane associata come amica una ed una sola istanza dei template di classe `B`
 
 **Dichiarazione nel template di classe `C` di un template di classe o di funzione _friend non associato_**
 ````C++
