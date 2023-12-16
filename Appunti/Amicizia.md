@@ -251,12 +251,15 @@ template<class T1, class T2> class C{
 	friend bool test<T1,T2>(C);
 };
 ````
-Ad ogni istanza del template di classe C rimane associata come amica una ed una sola istanza dei template di classe `B`
+Ad ogni istanza del template di classe C rimane associata come amica una ed una sola istanza dei template di classe `B` e dei template di funzione `A<T>::fun()`e `test`. Le dichiarazioni dei template di classe `a` e `b`e del template di funzione `test` devono essere visibili quando viene definito il template di classe `C`. *Si noti che per poter fare la dichiarazione del template di funzione `test`è necessario che sia visibile una dichiarazione incompleta del template di classe `C`*
 
-**Dichiarazione nel template di classe `C` di un template di classe o di funzione _friend non associato_**
+**Dichiarazione nel template di classe `C` di un template di classe o di funzione _friend non associato_** *cioè aventi i parametri disgiunti dai parametri di `C`*. 
+- In questo caso, i template di classe o di funzione dichiarati friend sono friend di ogni istanza del template di classe `C`. 
 ````C++
 template<class T>
 class C {
+	T t;
+
 	template<class Tp> //amicizia con template
 	friend int A<Tp>::fun(); //di metodo
 

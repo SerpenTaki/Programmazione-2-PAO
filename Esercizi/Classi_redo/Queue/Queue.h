@@ -56,4 +56,6 @@ template <class T>
 Queue<T>::~Queue() {
     while(!is_empty()) remove();
 }
+
+
 #endif

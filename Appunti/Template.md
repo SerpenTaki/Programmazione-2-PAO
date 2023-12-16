@@ -445,10 +445,9 @@ Queue<T>::~Queue(){//distruzione profonda
 
 ### Amicizie in template di classe
 [[Amicizia#Amicizie in template di classe]]
-
-
 ## Campi dati statici in template di classe
-Un campo dati statico intero che funzioni da contatore globale degli oggetti `QueueItem` presenti nelle liste di tutti gli oggetti di una *certa istanza* di `Queue`
+*Naturalmente in un template di classe possono essere dichiarati campi dati e metodi statici.*
+Aggiungiamo al template di classe `Queue`un campo dati statico intero che funzioni da contatore globale degli oggetti `QueueItem` presenti nelle liste di tutti gli oggetti di una *certa istanza* di `Queue`
 ````C++
 template <class Tipo>
 class Queue {
@@ -457,12 +456,12 @@ private:
 	...
 };
 ````
-L'inizializzazione esterna alla classe ha la seguente forma:
+Pertanto ad ogni istanza di `Queue`è associato un campo statico `contatore`diverso. L'inizializzazione di un campo dati statico di un template di classe naturalmente deve essere esterna alla classe e deve rispettare la seguente sintassi:
 ````C++
 template <class T>
 int Queue<T>::contatore = 0;
 ````
-Un campo dati statico è istanziato e quindi inizializzato dalla definizione del template **soltanto se viene effettivamente usato**. La mera definizione di un campo dati statico non provoca allocazione di memoria.
+Un campo dati statico è istanziato e quindi inizializzato dalla definizione del template **soltanto se viene effettivamente usato**. La mera definizione di un campo dati statico non provoca allocazione di memoria!!!!!!!!!!!!!!!
 ````C++
 template<int I> //parametro valore
 class C{
@@ -513,8 +512,7 @@ int main(){
 ````
 
 # Friend e classi annidate
-"Una classe annidata è un membro e come tale ha *gli stessi diritti di accesso di qualsiasi altro membro*. I membri di una classe racchiusa non hanno *nessun accesso speciale ai membri* di una classe annidata; devono essere rispettate le normali regole di accesso".
-
+"Una classe annidata è un membro della classe contenitore e come tale ha *gli stessi diritti di accesso di qualsiasi altro membro*. I membri di una classe racchiusa non hanno *nessun accesso speciale ai membri* di una classe annidata; devono essere rispettate le normali regole di accesso". *La classe contenitore invece non ha privilegi speciali sulla classe annidata*
 e le regole di accesso abituali specificano che:
 
 "Un membro di una classe può accedere anche a tutti i nomi a cui la classe ha accesso...".
@@ -535,6 +533,44 @@ private:
 	...
 };
 ````
-`QueueItem<T>` è un cosidetto *tipo implicito*, in quanto non è un tipo completamente definito ma dipende implicitamente dai parametri di tipo `Queue<T>`
-
+`QueueItem<T>` è un cosiddetto o *tipo implicito*, in quanto non è un tipo completamente definito ma dipende implicitamente dai parametri di tipo `Queue<T>`
+Il C++ standard prevede che l'uso di tipi e di template di classe o di funzione che dipendono da un parametro di tipo debba essere disambiguato tramite la keyword `typename`(*per i tipi*) e `template`(*per i template sia di classe che di funzione*). In altri termini non è permesso l'uso implicito di tipi e di template che dipendono da parametri di tipo. Supponiamo ad esempio che un template di classe contenga classi annidate, template di classi annidati come segue:
 [[STL#Vector]]
+
+````C++
+template <class T> class C{
+public:
+	class D{ //classe annidata
+	public:
+		T x; //tipo implicito per il compilatore anche se non lo uso
+	};
+
+	template <class U> class E{ //template di classe annidata
+	public:
+		T x;
+		void fun1() {return;}
+	};
+
+	template <class U> void fun2() {//template di funzione
+		T x; return;
+	}
+};
+````
+Allora l'uso dei nomi `D, E`e `fun2`che dipendono da un parametro di tipo, ad esempio nel seguente template di funzione `templateFun`, deve essere disambiguato come segue:
+```C++
+template <class T>
+void templateFun(typename C<T>::D d){ //non è un tipo, dipende da T, tipo esplicito->typename
+//C<T>::D è un uso di un tipo che dipende dal parametro T
+	typename C<T>::D d2 = d;
+
+/*
+1. E<int> è un uso del template di classe annidata che dipende dal parametro T
+2. C<T>::E<int> è un uso di un tipo che dipende dal parametro T
+*/
+	typename C<T>::template E<int> e;
+	e.fun1();
+//c.fun2<int> è un uso del template di funzione che dipende dal parametro T
+	C<T> c;
+	c.template fun2<int> ();
+}
+```

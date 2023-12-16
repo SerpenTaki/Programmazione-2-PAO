@@ -3,10 +3,11 @@
 
 template <class T>
 class QueueItem{
-public:
-    QueueItem(const T& val) : info(val), next(0) {}
+    friend class Queue<T>;
+private:
     T info;
     QueueItem* next;
+    QueueItem(const T& val) : info(val), next(0) {}
 };
 
 #endif
