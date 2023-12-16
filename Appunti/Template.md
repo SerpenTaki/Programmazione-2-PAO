@@ -574,3 +574,5 @@ void templateFun(typename C<T>::D d){ //non è un tipo, dipende da T, tipo espli
 	c.template fun2<int> ();
 }
 ```
+
+[[Albero]]
