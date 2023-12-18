@@ -97,4 +97,3 @@ ostream& operator<<(ostream& os, const AlbBinRic<T>& A){
     os << A.radice << endl; //stampa di Nodo<T>*
     return os;
 }
-
