@@ -1,3 +1,6 @@
+È  uno dei concetti fondamentali della programmazione ad oggetti. Lo strumento centrale per l'ereditarietà è la **derivazione tra classi**. 
+## Sottoclassi
+Abbiamo modellato il concetto di orario tramite la classe orario. Supponiamo ora di voler modellare il concetto di "orario con data" che quindi raffina il concetto di orario. Possiamo usare la classe `orario`per definire una nuova classe `dataora`che eredita da essa tutte le proprietà di `orario` ed a cui attribuiamo le ulteriori proprietà che ci interessano per modellare il concetto di orario con data.
 ````C++
 //dichiarazione classe orario
 class orario{
@@ -33,6 +36,7 @@ Sottoclasse **`D`** e superclasse **`B`**
 Sottotipo **`D`** e supertipo **`B`**
 ![[Pasted image 20231122154112.png]]
 
+**NOTA IMPORTANTE SE NON FONDAMENTALE:** *Ogni oggetto della classe derivata è utilizzabile come oggetto della classe base* ovvero che se **`D`** deriva da **`B`** allora vi è una conversione implicita da **`D`** a **`B`** che estrae da ogni oggetto `x` di `D`il sotto-oggetto di `x`della classe `B`.
 # Subtyping (subsumption)
 Relazione "is-a" induce il **subtyping** che è la **caratteristica fondamentale dell'ereditarietà**
 
@@ -107,7 +111,28 @@ B& rb=d;
 
 //D& è il tipo dinamico di rb
 ````
+#### Gerarchie di classi 
+Abbiamo già osservato che una classe derivata può a sua volta essere usata come classe base per un ulteriore derivazione. Ad esempio definiamo un tipo che oltre alle proprietà di `dataora`memorizzi anche il giorno della settimana
+```C++
+//tipo enumerazione settimana
+enum settimana{lun,mar,mer,gio,ven,sab,dom}
 
+class dataorasett : public dataora{
+public:
+	settimana GiornoSettimana() const;
+private:
+	settimana giornosettimana;
+};
+```
+*Diagramma della gerarchia:*
+```mermaid
+flowchart TD
+A[dataorasett] --> B[dataora]
+B --> C[orario]
+```
+## Accessibilità
+Una classe derivata può accedere alla parte privata di una sua classe base? **NO**
+*La parte privata di una qualsiasi classe `B` è inaccessibile alle classi derivate da `B` come lo è per ogni altra classe diversa da `B`.*
 ##### La parte privata della classe base è inaccessibile alla classe derivata
 Aggiungendo alla classe `dataora` un metodo `Set2K()` che assegna all'oggetto di invocazione le ore 00:00:00 del 1 gennaio 2000 **non possiamo scrivere**
 ````C++
@@ -118,10 +143,17 @@ dataora::Set2K(){
 	anno = 2000;
 }
 ````
+Perchè il campo dati `sec`è nella parte privata della classe base `orario`. D'altra parte una classe derivata da una classe base `B`ha certamente una relazione privilegiata rispetto ad una qualsiasi altra classe esterna a `B`. Infatti, oltre alle parti private e pubbliche di una classe `B` è prevista anche una parte `protected`, *i cui membri risultano accessibili alle classi derivate da `B`ma non risultano accessibili alle classi esterne a `B`*
+
+Membro | public | protected | private
+-----|--------|---------|----
+private | inaccessibile | inaccessibile | inaccessibile
+protected | protetto | protetto | privato 
+public | pubblico | protetto | privato
 
 ![[Pasted image 20231122173344.png]]
 **ATTENZIONE!!!!!!!**:
-- I membri `protected` rappresentano comunque una **violazione** dell'[[Information hiding]]
+- I membri `protected` rappresentano comunque una **violazione** dell'[[Information hiding]] -> modifiche a questo può comportare modifiche alle sottoclassi
 ````C++
 class C{
 private:
@@ -157,7 +189,10 @@ class G: public E{
 	}
 };
 ````
-### Ereditarietà privata
+
+LA forma di derivazione più diffusa è senz'altro quella pubblica, detta anche *ereditarietà di tipo*. In questo caso i metodi pubblici della classe base rimangono pubblici nella classe derivata. Quindi l'interfaccia pubblica di una classe D derivata direttamente da una classe base B si ottiene dall'interfaccia pubblica originaria di B aggiungendo i nuovi membri dichiarati pubblici nella classe derivata D.
+
+### Ereditarietà privata o ereditarietà di implementazione
 significa "essere implementati in termini di". Se `D` deriva praticamente da `B` significa che in `D` si è interessati ad alcune funzionalità di `B` e non si è interessati ad una *relazione concettuale di subtyping* tra `D`e`B`. L'ereditarietà privata eredita l'implementazione di `B` ma non l'interfaccia di B. *L'ereditarietà privata non gioca alcun ruolo nella fase di progettazione del software ma solo nella fase di implementazione del software.*
 
 ##### Ereditarietà privata vs relazione has-a
