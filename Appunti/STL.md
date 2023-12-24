@@ -1,7 +1,8 @@
+È una libreria di classi contenitore, di classi iteratore e di algoritmi su tali classi. STL è una libreria generica, cioè i suoi membri, classi e funzioni, sono dei template.
 # Vector
 È il più semplice contenitore di STL e per la maggioranza delle applicazioni è il più efficiente. È un template di classe che generalizza gli array dinamici.
 
-Caratteristiche di **_vector_**:
+Caratteristiche di **_vector_**: (*array dinamico*)
 1. È un contenitore che supporta **l'accesso casuale** agli elementi (accesso in posizione arbitraria in *tempo costante*)
 2. Inserimento e rimozione in *coda* in **tempo _ammortizzato_ costante**
 3. Inserimento e rimozione *arbitraria* in **tempo lineare _ammortizzato_**
@@ -38,7 +39,7 @@ cout << v.size() << " " << v.capacity(); // 10 10
 vector<string> u(v); //costruzione di copia
 w = u; //assegnazione
 ````
-Il metodo `size()` ritorna il numero di elementi contenuti nel vector. Il metodo `capacity()` ritorna invece la capacità del vector.
+Il metodo `size()` ritorna il numero di elementi correnti contenuti nel vector. Il metodo `capacity()` ritorna invece la capacità del vector, quindi il numero massimo prima di dover ridimensionarsi (*ogni ridimensionamento raddoppia la capacità. Nuova allocazione, copia e deallocazione del vecchio vettore*).
 **Invariante**: `v.size() <= v.capacity() == true`
 ````C++
 template <class T>
@@ -341,11 +342,13 @@ I **Contenitori associativi** permettono di accedere ad un elemento stesso o di 
 ### Contenitore insieme:
 `set<Tipo>`
 Modella il concetto matematico di insieme e quindi accetta solamente una occorrenza per ogni valore nell'insieme. La *chiave è costituita dal valore dell'elemento*. Quindi gli elementi contenuti nel set devono avere valori tutti distinti.
+- *insieme di elementi tutti distinti*
 
 ### Contenitore multinsieme
 `multiset<Tipo>`
 
 La chiave è anche in questo caso data dal valore dell'elemento. Un multiset può contenere **occorrenze multiple dello stesso elemento**, ovvero più elementi con lo stesso valore.
+*come i set ma permettono le ripetizioni*
 
 ### Contenitore mappa: 
 `map<T1,T2>`
