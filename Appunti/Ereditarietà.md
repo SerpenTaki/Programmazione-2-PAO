@@ -486,6 +486,8 @@ public:
 };
 ````
 ### Ridefinizione di metodi
+In una classe `D`derivata da `B`tipicamente si aggiungono dei membri propri (campi dati, metodi, classi annidate) ai membri ereditati dalla classe base `B`. D'altra parte, in `D`è anche possibile *ridefinire* i campi dati e i metodi ereditati da `B`.  Ciò significa che nella classe `D`si ridefinisce il significato di un membro `b`ereditato da `B` tramite una nuova definizione che nasconde quella ereditata da `B`. In `D`è possibile usare l'operatore di scoping `B::b` per accedere al membro `b` definito in `b`. 
+
 Potrebbe avere senso ridefinire nella classe derivata alcune funzionalità ereditate dalla classe base.
 I metodi sono concepiti come dai contratti, quindi l'implementazione di un contratto della classe base potrebbe richiedere **variazioni o adattamenti** nella classe derivata
 
@@ -522,7 +524,33 @@ orario y = d1 + d2; //OK
 dataora x = o1 + o2; //ILLEGALE
 d1.orario::operator+(d2); //invoca orario::operator+
 ````
+**ESEMPIO**
+```C++
+class B {
+protected:
+	int x;
+public:
+	B() : x(2) {}
+	void print() { cout << x << endl; }
+};
 
+class D: public B {
+private:
+	double x; //ridefinizione del campo dati x
+public: 
+	D() : x(3.14) {}
+	// ridefinizione di print()
+	void print() { cout << x << endl; } // è la x di D
+	void printAll() { cout << B::x << ' ' << x << endl; }
+};
+
+int main() {
+	B b; D d;
+	b.print(); //stampa 2
+	d.print(); //stampa 3.14
+	d.printAll(); //stampa 2 3.14
+}
+```
 ### Name hiding rule
 Una ridefinizione in `D` del nome di metodo `m()` nasconde sempre tutte le versioni sovraccaricate di `m()` disponibili in `B`, che non sono quindi direttamente accessibili in `D` ma solamente tramite l'operatore di scoping `B::`
 

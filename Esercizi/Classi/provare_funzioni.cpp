@@ -1,12 +1,29 @@
 #include<iostream>
-#include<string>
+
 
 using std::cout;
 using std::endl;
-using std::string;
+
+class B {
+protected:
+    int x;
+public:
+    B() : x(2) {}
+    void print() { cout << x << endl; }
+};
+
+class D : public B{
+private:
+    double x;
+public:
+    D() : x(3.14) {}
+    void print() { cout << B::x << endl; }
+    void printAll() {cout << B::x << ' ' << x << endl;}
+};
 
 int main(){
-    string st = "io sono una stringa bella ";
-    cout << "La lunghezza della stringa " << st << "è di " << st.size() << endl;
-// La lunghezza della stringa io sono una stringa bella è di 26
+    B b; D d;
+    b.print();
+    d.print();
+    d.printAll();
 }
