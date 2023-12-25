@@ -702,10 +702,18 @@ int main(){
 ````
 
 # Costruttori, distruttori, assegnazioni nelle classi derivate
+*Naturalmente, i costruttori, l'assegnazione ed il distruttore della classe base non sono ereditati dalla classe derivata, ma naturalmente c'è la possibilità per costruttori, assegnazione e distruttore della classe derivata di invocare quelli della classe base*.
+
+Ricordiamo che ogni oggetto di una classe `D`derivata direttamente da una classe base `B`, per effetto dei campi dati ereditati in `D`da `B`, contiene un sottooggetto della classe base `B`. Dunque, quando si istanzia un oggetto `d`di `D`occorrerà richiamare, esplicitamente o implicitamente nel costruttore di `D`, un costruttore di `B`per inizializzare il *sottoggetto* di `d`della classe base `B`.
+
+*Invocazione esplicita:* è possibile inserire esplicitamente nella lista di inizializzazione del costruttore di `D`un'invocazione esplicita di un qualsiasi costruttore di `B`
+
+*Invocazione implicita:* se la lista di inizializzazione del costruttore di `D`non include invocazioni esplicite di qualche costruttore di `B`allora viene implicitamente ed automaticamente invocato il costruttore di default di `B`, che dovrà quindi essere disponibile.
 
 ![[Pasted image 20231125164121.png]]
 [[Costruttori#Costruttori nelle classe derivate]]
 [[Distruttori#Distruttore standard nelle classi derivate]]
+
 
 # Esempio di derivazione
 Esempio classe poligono
