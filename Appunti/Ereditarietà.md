@@ -892,3 +892,4 @@ int main() {
 }
 ````
 
+[[Template#Ereditarietà e template]]

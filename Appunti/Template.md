@@ -576,3 +576,8 @@ void templateFun(typename C<T>::D d){ //non è un tipo, dipende da T, tipo espli
 ```
 
 [[Albero]]
+
+# Ereditarietà e template
+[[Ereditarietà]]
+
+Naturalmente l'ereditarietà può essere usata anche con i template di classe. In particolare sia la classe base che la classe derivata possono essere definite come template di classe. Analizziamo sinteticamente le 3 principali modalità di derivazione che conivolgono i template di classe.
