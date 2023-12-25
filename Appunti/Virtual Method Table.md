@@ -1,3 +1,4 @@
+[[Ereditarietà#Metodi virtuali]]
 Una **VMT** (*tabella dei metodi virtuali, tabella delle funzioni virtuali, tabella delle chiamate virtuali*) è un meccanismo utilizzato in un *linguaggio di programmazione* per supportare il *dispatch dinamico*.
 
 Ogni volta che una classe definisce una *funzione virtuale*, la maggior parte dei compilatori aggiunge alla classe una variabile membro nascosta che punta a un array di puntatori a funzioni (*virtuali*) chiamato VTM *vtable*. Questi puntatori vengono utilizzati in fase di esecuzione per invocare le implementazioni delle funzioni appropriate, perché in fase di compilazione potrebbe non essere ancora noto se deve essere chiamata la funzione di base o una funzione derivata implementata da una classe che eredita dalla classe di base.

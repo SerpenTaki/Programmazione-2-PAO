@@ -893,3 +893,15 @@ int main() {
 ````
 
 [[Template#Ereditarietà e template]]
+# Metodi virtuali
+Un oggetto di una classe derivata può essere usato ovunque sia richiesto un oggetto della classe base, ossia esiste una conversione implicita da oggetti di una classe derivata a oggetti di una classe base che estrae i corrispondenti sottooggetti. Ad esempio la funzione:
+`void F(orario o)`
+con un parametro formale di tipo `orario` può essere richiamandone passandole un parametro attuale di tipo `dataora`:
+`dataora d; F(d);`
+Cosa succede? Poichè il parametro `o` è passato per valore viene invocato il costruttore di copia di `orario` che costruisce `o` copiando il sottooggetto di tipo `orario` del parametro attuale `d`. Consideriamo invece la seguente funzione `G`.
+```
+void G(const orario& o); 
+...
+dataora d;
+G(d);
+```
