@@ -581,3 +581,58 @@ void templateFun(typename C<T>::D d){ //non è un tipo, dipende da T, tipo espli
 [[Ereditarietà]]
 
 Naturalmente l'ereditarietà può essere usata anche con i template di classe. In particolare sia la classe base che la classe derivata possono essere definite come template di classe. Analizziamo sinteticamente le 3 principali modalità di derivazione che conivolgono i template di classe.
+
+A) **Classe Base template e classe derivata da una istanza della classe base**
+```
+template <class T>
+class base { ... };
+
+class derivata : public base<int> {...};
+```
+Ogni oggetto della classe `derivata`contiene come sottoggetto un oggetto dell'istanza `base<int>`della classe template `base`.
+
+B) **Classe base non template e classe derivata template**
+```
+class base {...};
+
+template <class T>
+class derivata : public base {...};
+```
+Ogni oggetto di ogni istanza della classe template `derivata`contiene come sottooggetto un oggetto della classe `base`
+
+C) **Classe base e classe derivata entrambe template**
+```
+template <class T>
+class base {...};
+
+template <class Tp>
+class derivata : public base<Tp> {...};
+```
+
+I parametri della classe template `derivata` devono essere un sovrainsieme di quelli della classe `base`. Si tratta quindi di una derivazione associata. Ogni oggetto di una istanza della classe template `derivata` contiene come sottooggetto un oggetto dell'istanza associata alla classe template `base`. In questa tipologia di derivazione bisogna prestare attenzione alle modalità di accesso ai membri della classe base: infatti per accedere ad un membro *m* della classe base tramite oggetto di invocazione è necessario usare la sintassi `this->m`. 
+```C++
+template <class T> class B {
+public:
+	int m;
+	int n;
+	int f() {...}
+	int g() {...}
+};
+
+int n = 1; //variabile globale
+int g() {...} //funzione globale
+
+template <class T> class D : B<T> {
+public:
+	void h() {
+		m=2; //ILLEGALE
+		this->m = 2; //OK
+		f(); //ILLEGALE
+		this->f(); //OK
+		n = 3; //Assegnazione a ::n
+		this->n; // Assegnazione a B::n
+		g(); //Invoca ::g()
+		this->g(); //Invoca il metodo B::g()
+	}
+};
+```
