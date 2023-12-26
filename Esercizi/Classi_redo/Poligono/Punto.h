@@ -1,5 +1,7 @@
 #ifndef PUNTO_H
 #define PUNTO_H
+#include <iostream>
+#include <math.h>
 
 class punto {
 private:
@@ -11,14 +13,6 @@ public:
     static double lung(const punto& p1, const punto& p2);
 };
 
-static double punto::lung(const punto& p1, const punto& p2){
-    double aux;
-    if(p2 > p1)
-        aux = p2 - p1;
-    else 
-        aux = p1 - p2;
-    return aux;
-}
 
 class poligono{
 protected:
@@ -69,12 +63,12 @@ class triangolo : public poligono{
 public:
     triangolo(const punto v[]) : poligono(3, v) {}
     double area() const; //nuovo metodo
-}
+};
 
 double triangolo::area() const{ //usa la formula di Erone
     double p = perimetro()/2;
     double a = punto::lung(pp[1], pp[0]), b=punto::lung(pp[2], pp[1]), c=punto::lung(pp[0],pp[2]);
-    return sqrt(p*(p-a)*(p-b)*(p-c));
+    return std::sqrt(p*(p-a)*(p-b)*(p-c));
 }
 
 #endif
