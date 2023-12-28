@@ -905,3 +905,59 @@ void G(const orario& o);
 dataora d;
 G(d);
 ```
+Se il parametro formale di tipo `orario` è un riferimento (_costante_) possiamo richiamare la funzione con un parametro attuale di tipo `dataora`: in questo caso non viene fatta una copia del sottooggetto di `d` ma il parametro formale `o` diventa invece un alias dell'oggetto `d` di tipo `dataora`. Nella funzione `G` abbiamo che TS(o) = `const orario&` e quindi nel corpo di G il parametro `o` ha tipo dinamico `const dataora&` , cioè il fatto che a run-time succede che `o`in effetti è un riferimento ad un oggetto di `dataora`. Supponiamo ad esempio che in G il parametro `o`venga usato come oggetto di invocazione di un metodo `Stampa()`della classe `orario`che è stato ridefinito nella classe `dataora`:
+`void G(const orario& o) {o.Stampa();}`
+In questo caso se invochiamo G con parametro attuale `d` di tipo `dataora`verrà invocato il metodo `orario::Stampa()` o il metodo ridefinito `dataora::Stampa()`? Nel caso considerato il legame tra l'oggettto di invocazione `o` e la funzione `Stampa()` è *statico*, cioè viene effettuato a tempo di compilazione. Viene quindi invocato `orario::Stampa()`. Possiamo però fare in modo che, quando il parametro è passato per riferimento, l'associazione tra oggetto di invocazione e metodo da invocare venga effettuata a tempo di esecuzione in base al tipo dinamico del parametro e non in base al suo tipo statico. Un discorso analogo vale per un parametro di tipo puntatore, ad esempio `orario*`
+`void G(orario* p) {p->Stampa();}`
+
+Lo strumento C++ per far ciò è _la dichiarazione di un **metodo virtuale**._ Dichiarando virtuale, tramite la *keyword* `virtual`, il metodo `Stampa()` della classe base `orario` nel modo seguente:
+```C++
+class orario{
+	virtual void Stampa();
+	...
+};
+
+void G(const orario& o) {o.Stampa();}
+```
+nella funzione `G` verrà invocato `dataora::Stampa()` se TD(o)=`const dataora&` mentre verrà invocato `orario::Stampa()` se TD(o)=`const orario&`.
+*In altre parole se in una invocazione `G(x);` il parametro attuale `x` è di tipo `dataora` viene invocato il metodo `dataora::Stampa()` mentre se `x` è di tipo `orario` vine invocato `orario::Stampa()`. Si tratta del cosidetto* **legame dinamico _(dynamic binding o late binding_** *tra oggetto di invocazione e metodo virtuale.* 
+
+Il metodo virtuale da invocare verrà selezionato solamente a *run-time* e non staticamente dal compilatore (*tale meccanismo di invocazione vine anche detto dynamic lookup*). 
+
+**_Virtual_:** *permette di invocare metodi in base al loro tipo dinamico, "bypassando" il legame statico che c'è tra un oggetto e i suoi metodi* -> _deciso a compile time_
+
+**Differenza tra Overriding e Overloading:**
+- **Overriding**:
+	- *cambio il comportamento di un singolo metodo*
+	- *in Java tutti i metodi sono di default virtuali*
+- **Overloading**:
+	- *ho più metodi e modifico il comportamento degli operatori*
+###### Esempio:
+```C++
+dataora d;
+orario* p = &d;
+p->Stampa(); //oppure: (*p).Stampa()
+```
+In questo caso, se `orario::Stampa()` è stato dichiarato virtuale allora viene invocato `dataora::Stampa()`, altrimenti se `orario::stampa()` non è virtuale viene invocato (*staticamente determinato*) `orario::Stampa()`.
+Quindi marcando virtuale un metodo `m()` di una classe il progettista delega alle ridefinizioni di `m()` nelle sottoclassi di `B` il compito di implementare quel metodo virtuale `m()`in modo specifico alla particolare sottoclasse. **Una ridefinizione di un metodo virtuale `m()`viene anche detta _overriding_ di `m()`.**
+Quando in una classe `B` si dichiara virtuale un metodo `m()` esso resta virtuale in tutta la gerarchia di classi che derivano dalla classe `B`, anche se `m()` non è dichiarato esplicitamente virtuale nella ridefinizione operata dalle sottoclassi di `B`. A volte si segue la prassi di dichiarare esplicitamente che un metodo è virtuale in ogni sottoclasse dove viene ridefinito.
+*Se una sottoclasse `D` di `B` non ridefinisce il metodo virtuale `m()`allora `D`semplicemente eredita la definizione di `m()` presente nella sua superclasse diretta* (**Attenzione non la riprende dalla superclasse originale ma da quella diretta**)
+```C++
+class B {};
+
+class D : public B {
+public:
+	virtual void m() {}
+};
+
+int main(){
+	B b; D d; B *p = &d;
+	p->m(); //ILLEGALE perchè un invocazione di un metodo virtuale m() tramite un puntatore di tipo B*, non è disponibile nella classe B ma solo nella classe D
+}
+```
+Al momento della chiamata `p->m()`, il puntatore `p`ha tipo statico `B*` e tipo dinamico `D*`. Non si deve compiere **l'errore grave** di pensare che la chiamata `p->m()`sia legale e la sua esecuzione comporti l'invocazione del metodo virtuale `m()`della classe `D`: la chiamata `p->m()`comporta un errore in compilazione perchè il metodo `m()`non è disponibile nella classe `B`.
+
+Nell'**overriding** bisogna prestare particolare attenzione alla segnatura dei metodi. Se consideriamo:
+`virtual T m(T1,..., Tn);`
+di una classe base B allora l'overriding di `m()`in una classe `D`derivata da `B`deve mantenere la stessa segnatura, incluso il tipo di ritorno. (*altrimenti errore in compilazione*). 
+Rimane valida la regola che l'overriding di un metodo virtuale `m()`in una classe `D` derivata da `B` nasconde in `D`tutti gli ulteriori eventuali overloading di `m()`in `B`. Naturalmente questo vale per un metodo qualsiasi, in particolare per gli operatori. Consideriamo:
