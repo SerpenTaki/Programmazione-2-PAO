@@ -960,4 +960,67 @@ Al momento della chiamata `p->m()`, il puntatore `p`ha tipo statico `B*` e tipo 
 Nell'**overriding** bisogna prestare particolare attenzione alla segnatura dei metodi. Se consideriamo:
 `virtual T m(T1,..., Tn);`
 di una classe base B allora l'overriding di `m()`in una classe `D`derivata da `B`deve mantenere la stessa segnatura, incluso il tipo di ritorno. (*altrimenti errore in compilazione*). 
-Rimane valida la regola che l'overriding di un metodo virtuale `m()`in una classe `D` derivata da `B` nasconde in `D`tutti gli ulteriori eventuali overloading di `m()`in `B`. Naturalmente questo vale per un metodo qualsiasi, in particolare per gli operatori. Consideriamo:
+Rimane valida la regola che l'overriding di un metodo virtuale `m()`in una classe `D` derivata da `B` nasconde in `D`tutti gli ulteriori eventuali overloading di `m()`in `B`. Naturalmente questo vale per un metodo qualsiasi, in particolare per gli operatori.
+Consideriamo
+```C++
+#include<iostream>
+#include<string>
+
+using std::cout;
+using std::endl;
+using std::string;
+
+class B{
+public:
+	virtual int f() { cout << "B::f()\n"; return 1;}
+	virtual void f(string s) {cout << "B::f(string)" << endl;}
+	virtual void g() {cout << "B::g()" << endl;}
+};
+
+class D1 : public B {
+public:
+	//overriding di un metodo virtuale non sovraccaricato
+	void g() {cout << "D1::g()" << endl;}
+};
+
+class D2 : public B {
+public:
+	//overriding di un metodo virtuale sovraccaricato
+	int f() {cout << "D2::f()" <<endl; return 2;}
+};
+/*
+class D3 : public B {
+public:
+	//NON È possibile modificare il tipo di ritorno
+	void f() {cout << "D3::f()\n";} //ILLEGALE
+};
+*/
+class D4 : public B {
+public:
+	//Lista di argomenti modificata:
+	//è una ridefinizione e non un overriding
+	int f(int) {cout << "D4::f()" << endl; return 4;}
+};
+
+int main(){
+	string s = "ciao"; D1 d1; D2 d2; D4 d4;
+	int x = d1.f(); //B::f()
+	d1.f(s); //B::f(string)
+	x = d2.f(); //D2::f()
+	//d2.f(s); //Illegale "no matching function"
+	x = d4.f(1); //D4::f()
+	//x= d4.f(); //Illegale
+	//d4.f(s); //Illegale
+	B& br = d4; //Cast implicito
+	//br.f(1); //br non è di tipo D4 quindi dichiarazione illegale
+	br.f(); // B::f()
+	br.f(s); // B::f(string)
+}
+```
+
+È ammessa un'unica eccezione alla regola della preservazione della segnatura nell'overriding nel caso in cui il tipo di ritorno sia un tipo puntatore o riferimento ad una classe se la segnatura del metodo virtuale `m()`è:
+`virtual X* m(T1,...,Tn);`
+dove `X`è un tipo classe, allora se `Y`è una sottoclasse di `X`è permesso che l'overriding di `m()`possa cambiare il tipo di ritorno in `Y*`mentre deve sempre mantenere la stessa lista dei parametri. In questo caso si dice che i tipi di ritorno delle funzioni sono *covarianti*. Questa eccezione è permessa perchè l'overriding
+`virtual Y* m(T1,...,Tn);`
+ritorna un puntatore a `Y` sottoclasse di `X` e quindi quel puntatore può essere convertito implicitamente in un puntatore a `X`. Una regola del tutto analoga vale per i riferimenti. A volte questa possibilità si può rivelare utile, come illustra il seguente esempio.
+
