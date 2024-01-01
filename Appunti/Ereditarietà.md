@@ -1024,3 +1024,98 @@ dove `X`è un tipo classe, allora se `Y`è una sottoclasse di `X`è permesso che
 `virtual Y* m(T1,...,Tn);`
 ritorna un puntatore a `Y` sottoclasse di `X` e quindi quel puntatore può essere convertito implicitamente in un puntatore a `X`. Una regola del tutto analoga vale per i riferimenti. A volte questa possibilità si può rivelare utile, come illustra il seguente esempio.
 
+```C++
+#include <iostream>
+using std::cout;
+using std::endl;
+
+class X {};
+class Y : public X {};
+class Z : public X {};
+
+class B{
+	X x;
+public:
+	virtual X* m() {cout << "B::m() " ; return &x;}
+};
+
+class C : public B{
+	Y y;
+public:
+	virtual X* m() {cout << "Gay sex" << endl; return &y; }
+};
+
+class D: public B{
+	Z z;
+public:
+	virtual Z* m() {cout << "AAAAAA" << endl; return &z;} //OK overriding legale
+};
+
+class E : public B{
+	Y y;
+public:
+virtual Y* m() {cout << "T ho fregato" << endl; return &y;}
+};
+
+int main(){
+	C c; D d; B b; E e;
+	//Y* py = b.m(); //illegale
+	X* px = b.m();
+	Z* pz = d.m();
+	Y* py = e.m();
+}
+```
+In questo esempio, l'overriding di `m()` in `C` mantiene la stessa segnatura mentre l'overriding di `m()` in `D` modifica il tipo di ritorno da `X*` a `Z*`. Notiamo inoltre che l'overriding `C::m()` ritorna un puntatore ad un oggetto della classe `Y`sfruttando la conversione implicita da `Y*` a `X*` mentre `D::m()` ritorna un puntatore ad un oggetto della classe `Z` e non necessita di alcuna conversione implicita grazie al cambiamento del tipo di ritorno. Osserviamo quindi nel `main()` che riusciamo ad accedere al campo dati di tipo `Z` dell' oggetto `d` grazie al puntatore ritornato dall'invocazione `d.m()`. D'altra parte non è invece possibile ottenere l'accesso al campo dati di tipo `y`dell'oggetto `c`perchè l'overriding `C::m()` ritorna solamente un puntatore a `X`. In quest'ultimo caso l'unico modo per ottenere l'accesso al campo dati di tipo Y sarà quello di sfruttare un cosidetto downcast dinamico.
+
+Bisogna prestare attenzione all'overriding di metodi virtuali che hanno parametri che prevedono valori di default perchè si potrebbe essere tratti in inganno. Infatti nell'overriding di un metodo virtuale con valori di default il linguaggio non prevede che la segnatura del metodo debba necessariamente ripetere valori di default, che quindi possono essere omessi. Potrebbe quindi sembrare che un tale overriding di metodo che omette i valori di default non sia effettivamente un overriding del metodo virtuale ma invece un nuovo metodo della classe derivata, ma così invece non è. Si considerino:
+```C++
+class B {
+public:
+	virtual void m(int x = 0) {cout << "B::m ";}
+};
+
+class D : public B{
+public:
+	//è un overriding di B::m
+	virtual void m(int x) {cout << "D::m ";} //perdo il valore di default
+
+	//Legale è un nuovo metodo in D e non un overriding di B::m
+	virtual void m() {cout << "D::m() "; }
+};
+
+int main(){
+	B* p = new D;
+	D* q = new D;
+	p->m(2); //Stampa D::m e non B::m
+	p->m(); //stampa D::m e non D::m()
+	q->m(); //stampa D::m() e non D::m
+}
+```
+
+È possibile bloccare il late binding di un metodo virtuale tramite l'operatore di scoping.
+```C++
+class B{
+public:
+	virtual void m() {cout << "B::m()";}
+};
+
+class C: public B{
+public:
+	virtual void m() {cout << "C::m() ";}
+};
+
+class D: public C {
+public:
+	virtual void m() { cout << "D::m() ";}
+};
+
+int main(){
+	C* p = new D;
+	p->m(); //Dynamic binding, stampa: D::m()
+	p->B::m(); //Static binding, stampa: B::m()
+	p->C::m(); //Static binding, stampa C::m()
+}
+```
+Il puntatore di tipo statico `C*`ha tipo dinamico `D*`e quindi, per late binding, la chiamata `p->m()`provoca l'invocazione dell'overriding `D::m()`. È comunque possibile invocare tramite un legame statico il metodo `m()`definito in `B o C`usando il corrispondente operatore di scoping `B::m() o C::m()`. 
+Ad esempio l'invocazione `p->C::m()`è staticamente compilata in una chiamata al metodo `m()`definito in `C`evitando in tal modo il late binding a run-time. Questa possibilità di bloccare il meccanismo di legame dinamico tra oggetto di invocazione e metodo virtuale si può rivelare utile in contesti ove sorga la necessità di invocare un particolare overriding di qualche metodo virtuale.
+[[Virtual Method Table]]

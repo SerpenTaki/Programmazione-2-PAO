@@ -1,4 +1,47 @@
 [[Ereditarietà#Metodi virtuali]]
+
+*Il late binding implica un overhead dinamico a run-time in termini di spazio e tempo*. Esempio fatto con un architettura basata su Intel Core i7 2,66ghz
+```C++
+class B{
+public:
+	virtual void f() {}
+};
+
+class D: public B {
+public:
+	void f() {/*overriding*/}
+};
+
+int main() {
+	B* p = new D;
+	long int i=0;
+	//late binding
+	for (; i<1000000000; i++) p->f(); // 2.845 sec
+	//static binding
+	for (; i<1000000000; i++) p->B::f();// 2.512 sec
+}
+```
+
+Per ogni classe `C` che contiene almeno un metodo virtuale il compilatore crea anche una corrispondente tabella contenente gli indirizzi dei metodi virtuali di `C`(*quindi si tratta di puntatori a funzioni*) detta `vtable`. Inoltre per ogni oggetto di classe C il compilatore "*include*" anche un puntatore a funzione (detto *`vpointer`*) alla *vtable* di `C`. La selezione a run-time di quale metodo invocare in una chiamata polimorfa `p->m()`avviene seguendo tali strutture aggiuntive di puntatori.
+```C++
+class B{
+public:
+	FunctionPointer* vptr; //vpointer aggiunto dal compilatore
+	virtual void m1() {}
+	virtual void m2() {}
+};
+
+class D1: public B {
+public:
+	virtual void m1() {} //overriding 
+};
+
+class D2: public B {
+public:
+	virtual void m2() {} //overriding
+};
+```
+
 Una **VMT** (*tabella dei metodi virtuali, tabella delle funzioni virtuali, tabella delle chiamate virtuali*) è un meccanismo utilizzato in un *linguaggio di programmazione* per supportare il *dispatch dinamico*.
 
 Ogni volta che una classe definisce una *funzione virtuale*, la maggior parte dei compilatori aggiunge alla classe una variabile membro nascosta che punta a un array di puntatori a funzioni (*virtuali*) chiamato VTM *vtable*. Questi puntatori vengono utilizzati in fase di esecuzione per invocare le implementazioni delle funzioni appropriate, perché in fase di compilazione potrebbe non essere ancora noto se deve essere chiamata la funzione di base o una funzione derivata implementata da una classe che eredita dalla classe di base.
@@ -122,6 +165,14 @@ sottooggettoB "1" --o "1" Bstarp
 ````
 
 ## Distruttori Virtuali
+*Mettendo virtual al distruttore della base diventano virtual anche quelli delle derivate, eliminando così l'oggetto in base al suo tipo dinamico*.
+```
+D* pd = new D;
+B* pb = pd; //TD(pb) = D*
+delete pb;
+```
+In questa situazione `delete pb;` richiama il distruttore della classe base `B` su un oggetto della classe derivata `D`. Si può evitare ciò dichiarando virtuale il distruttore della classe base `B`: in questo modo, tutti i distruttori delle classi derivate da `B` diventano automaticamente virtuali ottenendo quindi l'effetto che quando viene applicato l'operatore `delete`ad un puntatore alla classe base `B` il cui tipo dinamico è `D*`, per qualche sottoclasse `D`di `B`, viene app
+
 ````C++
 class B{
 private:
