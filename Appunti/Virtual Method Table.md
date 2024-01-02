@@ -171,7 +171,7 @@ D* pd = new D;
 B* pb = pd; //TD(pb) = D*
 delete pb;
 ```
-In questa situazione `delete pb;` richiama il distruttore della classe base `B` su un oggetto della classe derivata `D`. Si può evitare ciò dichiarando virtuale il distruttore della classe base `B`: in questo modo, tutti i distruttori delle classi derivate da `B` diventano automaticamente virtuali ottenendo quindi l'effetto che quando viene applicato l'operatore `delete`ad un puntatore alla classe base `B` il cui tipo dinamico è `D*`, per qualche sottoclasse `D`di `B`, viene app
+In questa situazione `delete pb;` richiama il distruttore della classe base `B` su un oggetto della classe derivata `D`. Si può evitare ciò dichiarando virtuale il distruttore della classe base `B`: in questo modo, tutti i distruttori delle classi derivate da `B` diventano automaticamente virtuali ottenendo quindi l'effetto che quando viene applicato l'operatore `delete`ad un puntatore alla classe base `B` il cui tipo dinamico è `D*`, per qualche sottoclasse `D`di `B`, viene applicato l'operatore `delete`ad un puntatore alla classe base `B` il cui tipo dinamico è `
 
 ````C++
 class B{
