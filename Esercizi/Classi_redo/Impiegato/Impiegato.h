@@ -46,6 +46,26 @@ private:
     int tot; //pezzi venduti in un mese
 };
 
+class LavoratoreOre : public Impiegato{
+public:
+    LavoratoreOre(string s, double d=0, double e=0): Impiegato(s), pagaOraria(d), oreLavorate(e) {}
 
+    void setPaga(double d) { pagaOraria = d > 0 ? d : 0; }
+    void setOre(double d){
+        oreLavorate = d >= 0 && d <= 250 ? d : 0;
+    }
+    virtual double stipendio() const { // implementazione
+        if ( oreLavorate <= 160 ) //nessuno straordinario
+            return pagaOraria*oreLavorate;
+        else //le ore straordinarie sono pagate il doppio
+            return 160*pagaOraria+(orelavorate-160)*2*pagaOraria;
+    };
+    virtual void print() const {//overriding
+        cout << "Il lavoratore a ore "; Impiegato::print();
+    };
+private:
+    double pagaOraria;
+    double oreLavorate; //ore lavorate nel mese
+};
 
 #endif
