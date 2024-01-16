@@ -363,3 +363,48 @@ catch(...) {//catch generica
 La sintassi `catch(...)` denota una `catch` generica in grado di catturare tutte le eccezioni possibili. Quindi se si definisce un blocco `catch` generico prima di altri blocchi `catch` questi blocchi non potranno mai essere eseguiti: si tratterebbe di un errore logico di programmazione. **Una `catch` generica quindi deve sempre essere l'ultima nella lista delle `catch` che seguono un blocco `try`.**
 
 ### Rilanciare eccezioni
+È possibole rilanciare un'eccezione alla funzione chiamante tramite una `throw`. Ad esempio:
+```C++
+orario somma() try{
+	orario o1, o2; cin >> o1 >> o2; return o1 + o2;
+}
+catch(fine_file) {cerr << "Errore EOF"; throw} //passa al chiamante di somma, il quale cercherà un catch
+```
+Si noti che una `catch` che come unica azione rilanci l'eccezione al chiamante non è significativa, in quanto si comporta come se non fosse presente (*equivale all'azione di default*). Se durante un blocco `try` non si verificano eccezioni, le `catch` relative a tale blocco vengono saltate e l'esecuzione continua dal punto di programma che immediatamente segue l'ultimo blocco `catch`. Ogni `catch` specifica il tipo di eccezione che può catturare ed opzionalmente il nome di un parametro. Quando una `catch`cattura un'eccezione viene quindi eseguito il codice presente nel blocco. La `catch`che cattura un'eccezione è la prima `catch` incontrata durante la ricerca che abbia un *tipo compatibile* con il tipo dell'eccezione lanciata. Le regole che definiscono la compatibilità tra il tipo `T` del parametro di una `catch` non generica ed il tipo `E` dell'eccezione sono le seguenti:
+1. Il tipo `T` è uguale al tipo `E` 
+2. `E`è sottotipo derivato pubblicamente da `T`;
+3. `T` è un tipo puntatore `B*` ed `E` è un tipo puntatore `D*` dove `D` è una classe derivata da `B`;
+4. `T` è un tipo riferimento `B&` ed `E` è un tipo riferimento `D&` dove `D` è una derivata da `B`;
+5. `T` è il tipo `void*` ed `E` è un qualsiasi tipo puntatore;
+6. Non possono essere applicate conversioni implicite
+*Prima i catch delle classi derivate (in fondo alla gerarchia) poi si risale verso le classi base, altrimenti le catch delle classi base prendono tutto -> errore logico*.
+
+L'organizzazione delle eccezioni in una gerarchia di classi offre il vantaggio di utilizzare il meccanismo della derivazione e dei metodi virtuali. Molto spesso è quindi questo approccio usato nella piccola specifica delle eccezioni che sono previste per un insieme di moduli software.
+Le `catch` possono essere definite in svariati modi a seconda del contesto e delle esigenze. Alcuni comportamenti tipici sono i seguenti:
+- Esaminare l'errore ed invocare `terminate()`;
+- rilanciare un'eccezione;
+- convertire un tipo di eccezione in un altro, lanciando un'eccezione diversa;
+- cercare di ripristinare il funzionamento, in modo che il programma possa continuare dal punto di programma che immediatamente segue l'ultima `catch`;
+- analizzare la situazione che ha causato l'errore, eliminarne eventualmente la causa e riprovare a chiamare la funzione che ha causato originariamente l'eccezione.
+- Restituire un valore di stato all'ambiente.
+##### Specifica di eccezioni
+Nella dichiarazione di una funzione è opportuno indicare le eccezioni che essa può sollevare. Potremmo farlo in un modo informale usando dei commenti:
+```C++
+istream& operator>>(istream& is, orario& o);
+//input nel formato hh:mm:ss
+//può sollevare le eccezioni err_sint, err_sint, err_ore, err_sec, err_min
+```
+Un modo più conveniente è usare una *specifica esplicita* delle eccezioni:
+```C++
+istream& operator>>(istream& is, orario& o)
+	throw(err_sint, fine_file, err_ore, err_sec, err_min){
+	...
+}
+
+/////////////////////////////////////////////////////////////
+orario somma() throw(fine_file){
+	...
+}
+```
+La specifica delle eccezioni fa parte del prototipo della funzione. La stessa specifica delle eccezioni deve quindi comparire sia nella definizione della funzione che in tutte le eventuali dichiarazioni. Se si scrive `throw()` dopo la lista dei parametri di una funzione si dichiara che tale funzione non può lanciare alcuna eccezione. *Una funzione può lanciare solamente le eccezioni con i tipi specificati o con dei tipi da essi derivati*. Se durante l'esecuzione della funzione viene sollevata una eccezione non indicata nella specifica essa non viene propagata ma causa la terminazione immediata del programma. Questo succede perchè viene automaticamente lanciata l'eccezione di tipo predefinito (di libreria) `bad_exception` il cui blocco `catch`predefinito invoca la funzione `unexpected()` che per default invoca la funzione `terminate()`. La funzione `unexpected()` potrebbe essere ridefinita passando la ridefinizione alla funzione `set_unexpected()`//specifica non più sopportata in C++11
+
