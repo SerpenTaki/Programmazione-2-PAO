@@ -195,3 +195,171 @@ Derivano da `exception` anche le seguenti classi di eccezioni:
 - `bad_cast`, le cui eccezioni sono lanciate dal `dynamic_cast` per riferimenti
 - `bad_alloc`, lanciata dalla `new` quando lo heap è esaurito (il gestore di default invoca la `terminate()`).
 - `bad_typeid`, viene lanciata dall'operatore `typeid` quando ha come argomento un puntatore nullo
+
+# Parte riscritta secondo il libro o semplicemente riassuntino tattico
+
+### throw e catch
+La funzione in cui la situazione eccezionale si verifica *lancia* (*o solleva*) una cosidetta *eccezione* tramite il costrutto *throw*. Ad esempio consideriamo il metodo `Estrai_Una`.
+*nella gestione chiamante andrò a gestire l'eccezione, il try sta nella funzione chiamantem seguito dal catch*
+```C++
+// con smart-pointer
+telefonata bolletta::Estrai_Una(){
+	if (Vuota()) throw Ecc_Vuota(); //costruisco l'oggetto che lancio
+	telefonata aux = first->info;
+	first = first->next;
+	return aux;
+}
+```
+L'oggetto lanciato `Ecc_Vuota()` appartiene ad una classe definita allo scopo:
+```C++
+class Ecc_Vuota{
+...
+};
+```
+L'esecuzione di `throw` comporta la terminazione dell'esecuzione della funzione `Estrai_Una()` con il lancio dell'eccezione `Ecc_Vuota()`(*un oggetto eccezione anonimo costruito con il costruttore di default di `Ecc_Vuota`*) alla funzione chiamante (che può essere anche il `main()`).
+Nella funzione chiamante, il codice contenente la chiamata o le chiamate alla funzione è racchiuso in un blocco `try`ed è seguito da una lista di procedure, le clausole `catch` dette anche *gestori di eccezioni* che catturano e gestiscono le eccezioni sollevate. La funzione `abort()` fa parte della libreria standard del C che va inclusa con `#include<cstdlib>` e provoca la terminazione "**Brutale**" del `main()`. 
+```C++
+try { b.Estai_Una(); }
+catch (Ecc_Vuota){
+	cout << "La bolletta è vuota " << endl;
+	abort();
+}
+```
+Un altro esempio di funzione che può sollevare delle eccezioni potrebbe essere l'operatore di input della classe `orario`.
+```C++
+istream& operator>>(istream& is, orario& o){
+	//formato di input: hh:mm:ss
+	char c; int ore, minuti, secondi;
+	string::size_type pos;
+	string cifre("0123456789");
+	is >> c; //prima cifra delle ore
+	pos = cifre.find(c); ore = pos;
+	is >> c;
+	if (c != ':'){
+		//seconda cifra delle ore
+		pos = cifre.find(c);
+		ore = ore * 10 + pos;
+		is >> c; //input di ':'
+	} //ho letto le ore e c = ':'
+	is >> c; //prima cifra dei minuti
+	pos = cifre.find(c);
+	minuti = pos;
+	is >> c;
+	if(c != ':'){
+		//seconda cifra dei minuti
+		pos = cifre.find(c);
+		minuti = minuti * 10 + pos;
+		is >> c; //input di ':'
+	}// ho letto i minuti e c = ':'
+	is >> c; //prima cifra dei secondi
+	pos = cifre.find(c);
+	secondi = pos;
+	is >> c;
+	if(is && cifre.find(c) != string::npos){
+		//seconda cifra dei secondi
+		pos = cifre.find(c);
+		secondi = secondi * 10 + pos;
+	} //ho letto i secondi
+	else if (is) //carattere non cifra
+		is.putback(c);
+	o.sec = ore*3600 + minuti*60 + secondi;
+	return is;
+}
+```
+Con questa definizione dell'operatore di input può accadere che:
+1. I valori di `ore, minuti, secondi` non siano formati da uno o da 2 caratteri cifra (caratteri '0' .... '9') oppure non siano separati dal carattere ':'
+2. Lo stream termini (su `cin` con `Ctrl+D`, da file per un EOF) prima che sia stato letto `secondi`;
+3. I valori di `ore, minuti` e `secondi` non rispettino i limiti (ore <=23, minuti <=59, secondi <= 59)
+Definiamo allora le seguenti classi di eccezioni:
+```C++
+class err_sint{}; //errore di sintassi
+
+class fine_file{}; //file finito prematuramente
+
+class err_ore{}; //ora > 23
+class err_minuti{}; //minuti > 59
+class err_secondi{}; //secondi > 59
+```
+//guardare codice pag.244 per capire come vengono sollevate *in generale viene lanciata una throw*
+```C++
+if(!(is >> c)) throw fine_file();
+```
+Possiamo usare tale operatore di input di `orario` in una funzione che prende in input 2 oggetti di tipo `orario` e li somma:
+```C++
+orario somma() {
+	orario o1, o2;
+	try { cin >> o1; }
+	catch (err_sint) { cerr << "Errore di sintassi"; return orario(); }
+	catch (fine_file) { cerr << "Errore EOF"; abort(); }
+	catch (err_ore) { cerr << "Errore nelle ore";  return orario(); }
+	catch (err_min) { cerr << "Errore in minuti"; return orario(); }
+	catch (err_sec) { cerr << "Errore in secondi"; return orario(); }
+	try { cin >> o2; }
+	catch (err_sint) { cerr << "Errore di sintassi"; return orario(); }
+	catch (fine_file) { cerr << "Errore EOF"; abort(); }
+	catch (err_ore) { cerr << "Errore nelle ore";  return orario(); }
+	catch (err_min) { cerr << "Errore in minuti"; return orario(); }
+	catch (err_sec) { cerr << "Errore in secondi"; return orario(); }
+	return o1+o2;
+}
+```
+Se una clausola `catch` non contiene l'istruzione `return` (o `abort()`) l'esecuzione continua dal punto di programma che immediatamente segue le clausole `catch` del blocco `try`. La soluzione vista funziona correttamente ma la gestione delle eccezioni è mescolata alle istruzioni relative al normale flusso dell'esecuzione. Una soluzione migliore consiste nel racchiudere tutto il corpo della funzione in un unico blocco `try` e mettere tutte le clausole `catch`alla fine.
+```C++
+orario somma(){
+	try{
+		orario o1, o2; cin >> o1 >> o2; return o1 + o2;
+	}
+	catch (err_sint) {cerr << "Errore di sintassi" << return orario();}
+	catch (fine_file) {cerr << "Errore EOF"; abort();}
+	catch (err_ore) {cerr << "Errore ore" << return orario();
+		catch (err_min) { cerr << "Errore minuti"; return orario(); }
+	catch (err_sec) { cerr << "Errore secondi"; return orario(); }
+	}
+}
+```
+### Ricerca della clausola catch
+*cerca nella catch, poi passo alle funzioni chiamanti e risalgo fino al main*
+Quando in una funzione `F()` viene lanciata una eccezione tramite `throw` inizia la ricerca della clausola `catch` in grado di catturarla. Se l'espressione `throw` è collocata in un blocco `try`, l'esecuzione abbandona il blocco `try` e vengono esaminate in successione tutte le clausole `catch` associate a tale blocco per vedere se ne esiste una in grado di catturare l'eccezione. Se la si trova l'eccezione viene catturata e viene eseguito il codice della `catch`. Se non la si trova oppure se l'istruzione `throw` non era collocata all'interno del blocco `try` la ricerca continua nella funzione che ha invocato la funzione `F()`.
+Questo processo continua fino a che non viene individuata una clausola `catch` in grado di catturare l'eccezione, se non ne dovesse esistere una allora si arriva al metodo `main()` e in questo caso viene richiamata la funzione di libreria `terminata()` che per default chiama la funzione `abort()`che fa terminare l’esecuzione del programma con un errore.
+
+#### Catch generica
+Quando si esce da una funzione a causa di un'eccezione vengono richiamati i distruttori per le variabili locali della funzione. Questo garantisce il recupero di eventuale memoria dinamica allocata dalla funzione o la chiusura di file aperti dalla funzione. In altre parole potremmo volere che in certe azioni vengano comunque eseguite quando si esce dalla funzione.
+```C++
+class A {public: ~A() {cout << "~A ";}};
+
+void F() { A* p = new A[3]; throw 1; delete p; }
+
+int main(){
+	try { F(); }
+	catch (int) { cout << "int "; }
+	cout << "Fine ";
+}
+//stampa int fine
+//ovviamente non stampa ~A ~A ~A
+```
+Il seguente è uno schema generale di esempio
+```C++
+gestore() {
+	risorsa rs; //alloco una risorsa
+	rs.use();
+	... //codice che può sollevare eccezioni 
+	rs.release(); //non viene eseguita in caso di eccezione
+}
+```
+Se viene sollevata una eccezione e questa non viene catturata all'interno della funzione si esce dalla funzione senza rilasciare la risorsa.
+Possiamo gestire questo caso tramite una cosidetta `catch` *generica*.
+```C++
+gestore() try{
+	risorsa rs;
+	rs.use();
+	... //codice che può generare eccezioni
+	rs.realease();
+}
+catch(...) {//catch generica
+	rs.release();
+	throw; //rilancia l'eccezione al chiamante
+}
+```
+La sintassi `catch(...)` denota una `catch` generica in grado di catturare tutte le eccezioni possibili. Quindi se si definisce un blocco `catch` generico prima di altri blocchi `catch` questi blocchi non potranno mai essere eseguiti: si tratterebbe di un errore logico di programmazione. **Una `catch` generica quindi deve sempre essere l'ultima nella lista delle `catch` che seguono un blocco `try`.**
+
+### Rilanciare eccezioni
