@@ -268,3 +268,8 @@ int main(){
 ````
 A cosa può servire?
 Ad implementare I/O mediante `operator>>` ed `operator<<` su stringhe, ad esempio fornite dall'interazione con una GUI.
+
+
+# Book version:
+
+Gli oggetti delle varie classi di I/O vengono detti *stream*: sono delle sequenze non limitate di celle ognuna contenente un byte. La posizione di una cella di uno stream è un intero che parte da 0, come negli array. Ogni stream ha associato un buffer attraverso il quale passano effettivamente le operazioni di I/O. Per utilizzare le superclassi di `iostream` bisogna includere il file header `<iostream>`.

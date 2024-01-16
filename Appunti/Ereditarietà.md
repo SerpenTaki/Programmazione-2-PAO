@@ -1119,3 +1119,4 @@ int main(){
 Il puntatore di tipo statico `C*`ha tipo dinamico `D*`e quindi, per late binding, la chiamata `p->m()`provoca l'invocazione dell'overriding `D::m()`. È comunque possibile invocare tramite un legame statico il metodo `m()`definito in `B o C`usando il corrispondente operatore di scoping `B::m() o C::m()`. 
 Ad esempio l'invocazione `p->C::m()`è staticamente compilata in una chiamata al metodo `m()`definito in `C`evitando in tal modo il late binding a run-time. Questa possibilità di bloccare il meccanismo di legame dinamico tra oggetto di invocazione e metodo virtuale si può rivelare utile in contesti ove sorga la necessità di invocare un particolare overriding di qualche metodo virtuale.
 [[Virtual Method Table]]
+[[Ereditarietà Multipla]]
